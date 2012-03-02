@@ -42,7 +42,7 @@ define nginx::resource::vhost(
   $ssl_cert           = undef,
   $ssl_key            = undef,
   $proxy              = undef,
-  $proxy_read_timeout = $nginx::params::nx_proxy_read_timeout,
+  $proxy_read_timeout = '90',
   $index_files        = ['index.html', 'index.htm', 'index.php'],
   $www_root           = undef
 ) {
@@ -53,28 +53,25 @@ define nginx::resource::vhost(
     mode  => '0644',
   }
 
-  file { "${nginx::params::nx_conf_dir}/sites-available/${name}":
+  file { "${nginx::config_dir}/sites-available/${name}":
     ensure  => $ensure ? {
       'absent' => absent,
        default  => 'file',
     },
   }
 
-  file { "${nginx::params::nx_conf_dir}/sites-enabled/${name}":
+  file { "${nginx::config_dir}/sites-enabled/${name}":
     ensure  => $ensure ? {
       'absent' => absent,
        default  => 'link',
     },
-    target => "${nginx::params::nx_conf_dir}/sites-available/${name}",
+    target => "${nginx::config_dir}/sites-available/${name}",
   }
 
   concat_build { "${name}":
     order         => ['*.tmp'],
-    target        => "${nginx::params::nx_conf_dir}/sites-available/${name}",
-    notify        => Class['nginx::service'],
-  }
-  concat_fragment { "${name}+000.tmp":
-    content => "# !!File Managed By Puppet, Please Don't Touch This!!",
+    target        => "${nginx::config_dir}/sites-available/${name}",
+    notify        => $nginx::manage_service_autorestart,
   }
 
   # Add IPv6 Logic Check - Nginx service will not start if ipv6 is enabled
@@ -106,7 +103,7 @@ define nginx::resource::vhost(
     proxy              => $proxy,
     proxy_read_timeout => $proxy_read_timeout,
     www_root           => $www_root,
-    notify             => Class['nginx::service'],
+    notify             => $nginx::manage_service_autorestart,
   }
 
   # Create a proper file close stub.

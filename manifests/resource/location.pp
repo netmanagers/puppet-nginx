@@ -31,7 +31,7 @@ define nginx::resource::location(
   $www_root           = undef,
   $index_files        = ['index.html', 'index.htm', 'index.php'],
   $proxy              = undef,
-  $proxy_read_timeout = $nginx::params::nx_proxy_read_timeout,
+  $proxy_read_timeout = '90',
   $ssl                = false,
   $option             = undef,
   $location
@@ -40,7 +40,7 @@ define nginx::resource::location(
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
-    notify => Class['nginx::service'],
+    notify => $nginx::manage_service_autorestart,
   }
 
   ## Shared Variables

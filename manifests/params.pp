@@ -14,11 +14,6 @@
 #
 class nginx::params {
 
-  ### Extra params # Introduced for compatibility with nginx::resource::defines
-  $nx_conf_dir = $::operatingsystem ? {
-    default => '/etc/nginx',
-  }
-
   ### Application related parameters
 
   $package = $::operatingsystem ? {
@@ -75,15 +70,15 @@ class nginx::params {
   }
 
   $data_dir = $::operatingsystem ? {
-    default => '/etc/nginx',
+    default => '/usr/share/nginx/html',
   }
 
   $log_dir = $::operatingsystem ? {
-    default => '',
+    default => '/var/log/nginx',
   }
 
   $log_file = $::operatingsystem ? {
-    default => '/var/log/nginx.log',
+    default => [ '/var/log/nginx/access.log' , '/var/log/nginx/error.log' ]
   }
 
   $port = '80'

@@ -29,12 +29,12 @@ define nginx::resource::upstream (
     mode  => '0644',
   }
 
-  file { "/etc/nginx/conf.d/${name}-upstream.conf":
+  file { "${nginx::config_dir}/conf.d/${name}-upstream.conf":
     ensure   => $ensure ? {
       'absent' => absent,
       default  => 'file',
     },
     content  => template('nginx/conf.d/upstream.erb'),
-    notify   => Class['nginx::service'],
+    notify   => $nginx::manage_service_autorestart,
   }
 }
