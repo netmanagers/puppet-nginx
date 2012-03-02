@@ -4,6 +4,9 @@ This is a Puppet nginx module from the second generation of Example42 Puppet Mod
 
 Made by Alessandro Franceschi / Lab42
 
+The nginx::resource:: classes and relevant code has been cloned from https://github.com/zertico/puppetlabs-nginx.git
+which is a fort of James Fryman /PuppetLabs original nginx module
+
 Official site: http://www.example42.com
 
 Official git repository: http://github.com/example42/puppet-nginx

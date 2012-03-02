@@ -14,6 +14,11 @@
 #
 class nginx::params {
 
+  ### Extra params # Introduced for compatibility with nginx::resource::defines
+  $nx_conf_dir = $::operatingsystem ? {
+    default => '/etc/nginx',
+  }
+
   ### Application related parameters
 
   $package = $::operatingsystem ? {
