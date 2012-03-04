@@ -251,6 +251,12 @@ class nginx (
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
 
+  ### Calculation of variables that dependes on arguments
+  $vdir = $operatingsystem ? {
+    /(?i:Ubuntu|Debian|Mint)/              => "${nginx::config_dir}/sites-available",
+    /(?i:CentOS|RedHat|Scientific|Fedora)/ => "${nginx::config_dir}/conf.d",
+  }
+
   ### Definition of some variables used in the module
   $manage_package = $nginx::bool_absent ? {
     true  => 'absent',

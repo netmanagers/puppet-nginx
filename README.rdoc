@@ -121,3 +121,19 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           firewall_dst  => "$ipaddress_eth0",
         }
 
+== USAGE - VirtualHost
+
+You have 2 different options to manage virtual hosts
+
+* Use the nginx::vhost define, whose logic and parameters are similar to Example42 apache::vhost
+  and where you have to set your docroot and eventually a custom template to use:
+
+        nginx::vhost { 'mydomain.com' :
+          template => 'myproject/nginx/mydomain/nginx.conf.erb',
+          docroot  => '/var/www/mydomain',
+        }
+
+* Use the nginx::resource::vhost define which has been ported from puppetlabs/nginx module
+  and it provides more flexibility in the management of virtual hosts and single location
+  statements (with the nginx::resource::location define).
+  Note this the nginx::resource:: defines require https://github.com/zertico/pupmod-concat
