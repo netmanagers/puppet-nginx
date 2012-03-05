@@ -44,15 +44,15 @@ define nginx::vhost (
 
   # Some OS specific settings:
   # On Debian/Ubuntu manages sites-enabled 
-  case $operatingsystem {
+  case $::operatingsystem {
     ubuntu,debian,mint: {
       file { "ApacheVHostEnabled_$name":
-        path   => "/etc/nginx2/sites-enabled/${priority}-${name}.conf",
-        ensure => $enable ? {
+        path    => "/etc/nginx2/sites-enabled/${priority}-${name}.conf",
+        ensure  => $enable ? {
           true  => "${nginx::vdir}/${priority}-${name}.conf",
           false => absent,
         },
-        require => Package["nginx"],
+        require => Package['nginx'],
       }
     }
     redhat,centos,scientific,fedora: {
