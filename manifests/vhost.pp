@@ -46,11 +46,6 @@ define nginx::vhost (
     default => $groupowner,
   }
 
-  $real_docroot = $docroot ? {
-    ''      =>  "${apache::data_dir}/${name}",
-    default => $docroot,
-  }
-
   $bool_create_docroot = any2bool($create_docroot)
 
   file { "${nginx::vdir}/${priority}-${name}.conf":
@@ -82,7 +77,7 @@ define nginx::vhost (
   }
 
   if $bool_create_docroot == true {
-    file { $real_docroot:
+    file { $docroot:
       ensure => directory,
       owner  => $real_owner,
       group  => $real_groupowner,
