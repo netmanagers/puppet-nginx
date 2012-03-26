@@ -28,10 +28,25 @@ define nginx::vhost (
   $template      = 'nginx/vhost/vhost.conf.erb',
   $priority      = '50',
   $serveraliases = '',
-  $enable        = true ) {
+  $create_docroot = true,
+  $enable        = true,
+  $owner         = '',
+  $groupowner    = '' ) {
 
   include nginx
   include nginx::params
+
+  $real_owner = $owner ? {
+    ''      => "${nginx::config_file_owner}",
+    default => $owner,
+  }
+
+  $real_groupowner = $groupowner ? {
+    ''      => "${nginx::config_file_group}",
+    default => $groupowner,
+  }
+
+  $bool_create_docroot = any2bool($create_docroot)
 
   file { "${nginx::vdir}/${priority}-${name}.conf":
     content => template($template),
@@ -47,7 +62,7 @@ define nginx::vhost (
   case $::operatingsystem {
     ubuntu,debian,mint: {
       file { "ApacheVHostEnabled_$name":
-        path    => "/etc/nginx2/sites-enabled/${priority}-${name}.conf",
+        path    => "/etc/nginx/sites-enabled/${priority}-${name}.conf",
         ensure  => $enable ? {
           true  => "${nginx::vdir}/${priority}-${name}.conf",
           false => absent,
@@ -59,6 +74,15 @@ define nginx::vhost (
       # include nginx::redhat
     }
     default: { }
+  }
+
+  if $bool_create_docroot == true {
+    file { $docroot:
+      ensure => directory,
+      owner  => $real_owner,
+      group  => $real_groupowner,
+      mode   => '0775',
+    }
   }
 
 }
