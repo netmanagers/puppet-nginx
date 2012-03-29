@@ -410,8 +410,8 @@ class nginx (
   ### Firewall management, if enabled ( firewall => true )
   if $nginx::bool_firewall == true {
     firewall { "nginx_${nginx::protocol}_${nginx::port}":
-      source      => $nginx::firewall_source,
-      destination => $nginx::firewall_destination,
+      source      => $nginx::firewall_src,
+      destination => $nginx::firewall_dst,
       protocol    => $nginx::protocol,
       port        => $nginx::port,
       action      => 'allow',
