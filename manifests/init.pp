@@ -253,8 +253,8 @@ class nginx (
 
   ### Calculation of variables that dependes on arguments
   $vdir = $::operatingsystem ? {
-    /(?i:Ubuntu|Debian|Mint)/              => "${nginx::config_dir}/sites-available",
-   default                                 => "${nginx::config_dir}/conf.d",
+    /(?i:Ubuntu|Debian|Mint)/ => "${nginx::config_dir}/sites-available",
+    default                   => "${nginx::config_dir}/conf.d",
   }
 
   ### Definition of some variables used in the module
@@ -292,7 +292,9 @@ class nginx (
     default => 'present',
   }
 
-  if $nginx::bool_absent == true or $nginx::bool_disable == true or $nginx::bool_disableboot == true {
+  if $nginx::bool_absent == true
+  or $nginx::bool_disable == true
+  or $nginx::bool_disableboot == true {
     $manage_monitor = false
   } else {
     $manage_monitor = true
@@ -362,7 +364,7 @@ class nginx (
       notify  => $nginx::manage_service_autorestart,
       source  => $nginx::source_dir,
       recurse => true,
-      purge   => $nginx::source_dir_purge,
+      purge   => $bool_source_dir_purge,
       replace => $nginx::manage_file_replace,
       audit   => $nginx::manage_audit,
     }
