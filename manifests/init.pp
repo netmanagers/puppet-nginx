@@ -364,7 +364,7 @@ class nginx (
       notify  => $nginx::manage_service_autorestart,
       source  => $nginx::source_dir,
       recurse => true,
-      purge   => $bool_source_dir_purge,
+      purge   => $nginx::bool_source_dir_purge,
       replace => $nginx::manage_file_replace,
       audit   => $nginx::manage_audit,
     }
