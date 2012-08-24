@@ -37,6 +37,7 @@ class nginx::params {
   }
 
   $process_user = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => 'www-data',
     default => 'nginx',
   }
 
