@@ -131,6 +131,19 @@
 # [*service*]
 #   The name of nginx service
 #
+# [*gzip*]
+#   Specified the gzip function of nginx 'on' or 'off'. Deault is 'on',
+#
+# [*worker_connections*]
+#   Specified worker connections number. Default is 1024.
+#
+# [*keepalive_timeout*]
+#   Specified keepalive timeout. Default is 65(ms).
+#
+# [*client_max_body_size*]
+#   Specified the max body size of client. Default is 10mb. 
+#   Increase this param if your nginx is an upload server.
+#
 # [*service_status*]
 #   If the nginx service init script supports status argument
 #
@@ -236,6 +249,10 @@ class nginx (
   $data_dir            = params_lookup( 'data_dir' ),
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
+  $gzip                = params_lookup( 'gzip' ),
+  $worker_connections  = params_lookup( 'worker_connections' ),
+  $keepalive_timeout  = params_lookup( 'keepalive_timeout' ),
+  $client_max_body_size  = params_lookup( 'client_max_body_size' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' )
   ) inherits nginx::params {
@@ -250,6 +267,25 @@ class nginx (
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
+
+  $gzip = $gzip ? {
+    'off'     => 'off',
+    'OFF'     => 'off',
+    'ON'      => 'on'
+    default   => 'on',
+  }
+
+  $worker_connections = $worker_connections ? {
+    default => 1024,
+  }
+
+  $keepalive_timeout = $keepalive_timeout ? {
+    default => 65,
+  }
+
+  $client_max_body_size = $client_max_body_size ? {
+    default = '10m';
+  }
 
   ### Calculation of variables that dependes on arguments
   $vdir = $::operatingsystem ? {

@@ -82,6 +82,11 @@ class nginx::params {
     default => [ '/var/log/nginx/access.log' , '/var/log/nginx/error.log' ]
   }
 
+  $gzip = 'on'
+  $worker_connections = 1024
+  $keepalive_timeout = 65
+  $client_max_body_size = '10m'
+
   $port = '80'
   $protocol = 'tcp'
 
