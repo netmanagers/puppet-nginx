@@ -14,6 +14,11 @@
 #
 class nginx::params {
 
+  $gzip = 'on'
+  $worker_connections = 1024
+  $keepalive_timeout = 65
+  $client_max_body_size = '10m'
+  
   ### Application related parameters
 
   $package = $::operatingsystem ? {
@@ -81,11 +86,6 @@ class nginx::params {
   $log_file = $::operatingsystem ? {
     default => [ '/var/log/nginx/access.log' , '/var/log/nginx/error.log' ]
   }
-
-  $gzip = 'on'
-  $worker_connections = 1024
-  $keepalive_timeout = 65
-  $client_max_body_size = '10m'
 
   $port = '80'
   $protocol = 'tcp'
