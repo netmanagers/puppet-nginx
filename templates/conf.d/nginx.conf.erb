@@ -1,30 +1,29 @@
 # File Managed by Puppet 
 user <%= scope.lookupvar('nginx::process_user') %>;
-worker_processes 1
+worker_processes <%= processorcount %>;
 
 error_log  <%= scope.lookupvar('nginx::log_dir')%>/error.log;
 pid        <%= scope.lookupvar('nginx::pid_file')%>;
 
 events {
-  worker_connections 1024
+  worker_connections <%= scope.lookupvar('nginx::worker_connections')%>
   # <% if scope.lookupvar('nginx::nx_multi_accept' == 'on') %>multi_accept on;<% end %>
 }
 
 http {
-  include       /etc/nginx/mime.types;
+  include       <%= scope.lookupvar('nginx::config_dir')%>/mime.types;
   default_type  application/octet-stream;
 
-  access_log  <%= scope.lookupvar('nginx:log_dir')%>/access.log;
+  access_log  <%= scope.lookupvar('nginx::log_dir')%>/access.log;
 
-  sendfile    on
+  sendfile    on;
+  #tcp_nopush  on;
+  tcp_nodelay        on;
+  client_max_body_size <%= scope.lookupvar('nginx::client_max_body_size')%>;
+  keepalive_timeout  <%= scope.lookupvar('nginx::keepalive_timeout')%>;
 
-#  tcp_nopush  on;
+  gzip         <%= scope.lookupvar('nginx::gzip')%>;
+  gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-  keepalive_timeout  65
-  tcp_nodelay        on
-
-  # gzip         on;
-  # gzip_disable "MSIE [1-6]\.(?!.*SV1)";
-
-  include /etc/nginx/conf.d/*.conf;
+  include <%= scope.lookupvar('nginx::config_dir')%>/conf.d/*.conf;
 }
