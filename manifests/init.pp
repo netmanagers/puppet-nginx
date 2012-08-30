@@ -212,6 +212,10 @@
 #   Alessandro Franceschi <al@lab42.it/>
 #
 class nginx (
+  $gzip                = params_lookup( 'gzip' ),
+  $worker_connections  = params_lookup( 'worker_connections' ),
+  $keepalive_timeout  = params_lookup( 'keepalive_timeout' ),
+  $client_max_body_size  = params_lookup( 'client_max_body_size' ),
   $my_class            = params_lookup( 'my_class' ),
   $source              = params_lookup( 'source' ),
   $source_dir          = params_lookup( 'source_dir' ),
@@ -249,10 +253,6 @@ class nginx (
   $data_dir            = params_lookup( 'data_dir' ),
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
-  $gzip                = params_lookup( 'gzip' ),
-  $worker_connections  = params_lookup( 'worker_connections' ),
-  $keepalive_timeout  = params_lookup( 'keepalive_timeout' ),
-  $client_max_body_size  = params_lookup( 'client_max_body_size' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' )
   ) inherits nginx::params {
@@ -273,18 +273,6 @@ class nginx (
     'OFF'     => 'off',
     'ON'      => 'on'
     default   => 'on',
-  }
-
-  $worker_connections = $worker_connections ? {
-    default => 1024,
-  }
-
-  $keepalive_timeout = $keepalive_timeout ? {
-    default => 65,
-  }
-
-  $client_max_body_size = $client_max_body_size ? {
-    default = '10m';
   }
 
   ### Calculation of variables that dependes on arguments
