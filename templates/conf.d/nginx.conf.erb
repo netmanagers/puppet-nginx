@@ -25,5 +25,5 @@ http {
   gzip         <%= scope.lookupvar('nginx::gzip')%>;
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-  include <%= scope.lookupvar('nginx::config_dir')%>/conf.d/*.conf;
+  include <%= scope.lookupvar('nginx::vdir')%>/*.conf;
 }
