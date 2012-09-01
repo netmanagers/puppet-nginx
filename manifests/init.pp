@@ -271,7 +271,7 @@ class nginx (
   $gzip = $gzip ? {
     'off'     => 'off',
     'OFF'     => 'off',
-    'ON'      => 'on'
+    'ON'      => 'on',
     default   => 'on',
   }
 
