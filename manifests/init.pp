@@ -214,7 +214,7 @@
 class nginx (
   $gzip                = params_lookup( 'gzip' ),
   $worker_connections  = params_lookup( 'worker_connections' ),
-  $keepalive_timeout  = params_lookup( 'keepalive_timeout' ),
+  $keepalive_timeout   = params_lookup( 'keepalive_timeout' ),
   $client_max_body_size  = params_lookup( 'client_max_body_size' ),
   $my_class            = params_lookup( 'my_class' ),
   $source              = params_lookup( 'source' ),
@@ -268,7 +268,7 @@ class nginx (
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
 
-  $gzip = $gzip ? {
+  $real_gzip = $gzip ? {
     'off'     => 'off',
     'OFF'     => 'off',
     'ON'      => 'on',
