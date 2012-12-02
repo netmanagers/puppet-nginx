@@ -95,7 +95,6 @@ class nginx::params {
   $source = ''
   $source_dir = ''
   $source_dir_purge = false
-  $source_dir_force = false
   $template = ''
   $options = ''
   $service_autorestart = true
