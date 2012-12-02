@@ -27,14 +27,8 @@
 # [*source_dir_purge*]
 #   If set to true (default false) the existing configuration directory is
 #   mirrored with the content retrieved from source_dir
-#   (source => $source_dir , recurse => true , purge => true)
-#   Can be defined also by the (top scope) variable $nginx_source_dir_purge
-#
-# [*source_dir_force*]
-#   If set to true (default false), this will add the force parameter to
-#   the purge. This will also purge subdirs and links etc.
 #   (source => $source_dir , recurse => true , purge => true, force => true)
-#   Can be defined also by the (top scope) variable $nginx_source_dir_force
+#   Can be defined also by the (top scope) variable $nginx_source_dir_purge
 #
 # [*template*]
 #   Sets the path to the template to use as content for main configuration file
@@ -226,7 +220,6 @@ class nginx (
   $source              = params_lookup( 'source' ),
   $source_dir          = params_lookup( 'source_dir' ),
   $source_dir_purge    = params_lookup( 'source_dir_purge' ),
-  $source_dir_force    = params_lookup( 'source_dir_force' ),
   $template            = params_lookup( 'template' ),
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
   $options             = params_lookup( 'options' ),
@@ -265,7 +258,6 @@ class nginx (
   ) inherits nginx::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
-  $bool_source_dir_force=any2bool($source_dir_force)
   $bool_service_autorestart=any2bool($service_autorestart)
   $bool_absent=any2bool($absent)
   $bool_disable=any2bool($disable)
@@ -397,7 +389,7 @@ class nginx (
       source  => $nginx::source_dir,
       recurse => true,
       purge   => $nginx::bool_source_dir_purge,
-      force   => $nginx::bool_source_dir_force,
+      force   => $nginx::bool_source_dir_purge,
       replace => $nginx::manage_file_replace,
       audit   => $nginx::manage_audit,
     }
