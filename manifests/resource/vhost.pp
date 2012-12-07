@@ -38,6 +38,7 @@ define nginx::resource::vhost(
   $ipv6_enable        = false,
   $ipv6_listen_ip     = '::',
   $ipv6_listen_port   = '80',
+  $server_name        = $name,
   $ssl                = absent,
   $ssl_cert           = undef,
   $ssl_key            = undef,
