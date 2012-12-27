@@ -1,0 +1,7 @@
+.*.sw[a-z]
+*.un~
+Session.vim
+.project
+metadata.json
+pkg/
+spec/fixtures
