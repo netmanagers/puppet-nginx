@@ -6,7 +6,7 @@ error_log  <%= scope.lookupvar('nginx::log_dir')%>/error.log;
 pid        <%= scope.lookupvar('nginx::pid_file')%>;
 
 events {
-  worker_connections <%= scope.lookupvar('nginx::worker_connections')%>
+  worker_connections <%= scope.lookupvar('nginx::worker_connections')%>;
   # <% if scope.lookupvar('nginx::nx_multi_accept') == 'on' %>multi_accept on;<% end %>
 }
 
