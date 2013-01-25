@@ -50,9 +50,9 @@ define nginx::vhost (
 
   file { "${nginx::vdir}/${priority}-${name}.conf":
     content => template($template),
-    mode    => $nginx::configfile_mode,
-    owner   => $nginx::configfile_owner,
-    group   => $nginx::configfile_group,
+    mode    => $nginx::config_file_mode,
+    owner   => $nginx::config_file_owner,
+    group   => $nginx::config_file_group,
     require => Package['nginx'],
     notify  => Service['nginx'],
   }
