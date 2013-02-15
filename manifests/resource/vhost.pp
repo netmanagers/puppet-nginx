@@ -54,24 +54,24 @@ define nginx::resource::vhost(
     mode  => '0644',
   }
 
-  file { "${nginx::config_dir}/sites-available/${name}":
+  file { "${nginx::config_dir}/sites-available/${name}.conf":
     ensure  => $ensure ? {
       'absent' => absent,
        default  => 'file',
     },
   }
 
-  file { "${nginx::config_dir}/sites-enabled/${name}":
+  file { "${nginx::config_dir}/sites-enabled/${name}.conf":
     ensure  => $ensure ? {
       'absent' => absent,
        default  => 'link',
     },
-    target => "${nginx::config_dir}/sites-available/${name}",
+    target => "${nginx::config_dir}/sites-available/${name}.conf",
   }
 
   concat_build { "${name}":
     order         => ['*.tmp'],
-    target        => "${nginx::config_dir}/sites-available/${name}",
+    target        => "${nginx::config_dir}/sites-available/${name}.conf",
     notify        => $nginx::manage_service_autorestart,
   }
 
