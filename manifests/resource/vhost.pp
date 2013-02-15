@@ -49,9 +49,10 @@ define nginx::resource::vhost(
 ) {
 
   File {
-    owner => 'root',
-    group => 'root',
-    mode  => '0644',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Package['nginx']
   }
 
   file { "${nginx::config_dir}/sites-available/${name}":
