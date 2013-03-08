@@ -145,3 +145,5 @@ You have 2 different options to manage virtual hosts
   and it provides more flexibility in the management of virtual hosts and single location
   statements (with the nginx::resource::location define).
   Note this the nginx::resource:: defines require https://github.com/zertico/pupmod-concat
+
+[![Build Status](https://travis-ci.org/example42/puppet-nginx.png?branch=master)](https://travis-ci.org/example42/puppet-nginx)
