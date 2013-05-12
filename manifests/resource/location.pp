@@ -78,7 +78,7 @@ define nginx::resource::location(
 
   ## Only create SSL Specific locations if $ssl is true.
   concat_fragment { "${vhost}+80-ssl.tmp":
-    ensure  => $ssl
+    ensure  => $ssl,
     order   => '80',
     content => $content_real,
     target  => "${nginx::config_dir}/sites-available/${name}.conf",
