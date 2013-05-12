@@ -4,7 +4,7 @@ This is a Puppet nginx module from the second generation of Example42 Puppet Mod
 
 Made by Alessandro Franceschi / Lab42
 
-The nginx::resource:: classes and relevant code has been cloned from https://github.com/zertico/puppetlabs-nginx.git
+The nginx::resource:: classes and relevant code has been derived from https://github.com/zertico/puppetlabs-nginx.git
 which is a fort of James Fryman /PuppetLabs original nginx module
 
 Official site: http://www.example42.com
@@ -25,7 +25,7 @@ For detailed info about the logic and usage patterns of Example42 modules read R
 
 * Install nginx with some useful settings
 
-        class { "nginx": 
+        class { "nginx":
           worker_connections => 4096; # the default value 1024 cannot match the needs of a large site
           keepalive_timeout => 120; # increase this according to your app's responde time
           client_max_body_size => '200m'; # increase this while your nginx works as an upload server.
@@ -144,6 +144,5 @@ You have 2 different options to manage virtual hosts
 * Use the nginx::resource::vhost define which has been ported from puppetlabs/nginx module
   and it provides more flexibility in the management of virtual hosts and single location
   statements (with the nginx::resource::location define).
-  Note this the nginx::resource:: defines require https://github.com/zertico/pupmod-concat
 
 [![Build Status](https://travis-ci.org/example42/puppet-nginx.png?branch=master)](https://travis-ci.org/example42/puppet-nginx)

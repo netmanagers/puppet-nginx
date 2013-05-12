@@ -54,12 +54,9 @@ define nginx::resource::vhost(
     mode    => '0644',
     require => Package['nginx']
   }
-
-  file { "${nginx::config_dir}/sites-available/${name}.conf":
-    ensure  => $ensure ? {
-      'absent' => absent,
-       default  => 'file',
-    },
+  include concat::setup
+  concat { "${nginx::config_dir}/sites-available/${name}.conf":
+    ensure  => $ensure,
   }
 
   file { "${nginx::config_dir}/sites-enabled/${name}.conf":
@@ -68,12 +65,6 @@ define nginx::resource::vhost(
        default  => 'link',
     },
     target => "${nginx::config_dir}/sites-available/${name}.conf",
-  }
-
-  concat_build { "${name}":
-    order         => ['*.tmp'],
-    target        => "${nginx::config_dir}/sites-available/${name}.conf",
-    notify        => $nginx::manage_service_autorestart,
   }
 
   # Add IPv6 Logic Check - Nginx service will not start if ipv6 is enabled
@@ -91,9 +82,12 @@ define nginx::resource::vhost(
 
   # Use the File Fragment Pattern to construct the configuration files.
   # Create the base configuration file reference.
-  concat_fragment { "${name}+001.tmp":
+  concat::fragment { "${name}+01.tmp":
+    order   => '01',
     content => template('nginx/vhost/vhost_header.erb'),
     ensure  => $ensure,
+    notify  => $nginx::manage_service_autorestart,
+    target  => "${nginx::config_dir}/sites-available/${name}.conf",
   }
 
   # Create the default location reference for the vHost
@@ -109,18 +103,27 @@ define nginx::resource::vhost(
   }
 
   # Create a proper file close stub.
-  concat_fragment { "${name}+699.tmp":
+  concat::fragment { "${name}+69.tmp":
+    order   => '69',
     content => template('nginx/vhost/vhost_footer.erb'),
     ensure  => $ensure,
+    notify  => $nginx::manage_service_autorestart,
+    target  => "${nginx::config_dir}/sites-available/${name}.conf",
   }
 
   # Create SSL File Stubs if SSL is enabled
-  concat_fragment { "${name}+700-ssl.tmp":
+  concat::fragment { "${name}+70-ssl.tmp":
+    order   => '70',
     content => template('nginx/vhost/vhost_ssl_header.erb'),
     ensure  => $ssl,
+    notify  => $nginx::manage_service_autorestart,
+    target  => "${nginx::config_dir}/sites-available/${name}.conf",
   }
-  concat_fragment { "${name}+999-ssl.tmp":
+  concat::fragment { "${name}+99-ssl.tmp":
+    order   => '99',
     content => template('nginx/vhost/vhost_footer.erb'),
     ensure  => $ssl,
+    notify  => $nginx::manage_service_autorestart,
+    target  => "${nginx::config_dir}/sites-available/${name}.conf",
   }
 }
