@@ -32,7 +32,7 @@
 #    ssl_key  => '/tmp/server.pem',
 #  }
 define nginx::resource::vhost(
-  $ensure             = 'enable',
+  $ensure             = 'present',
   $listen_ip          = '*',
   $listen_port        = '80',
   $ipv6_enable        = false,
@@ -56,7 +56,6 @@ define nginx::resource::vhost(
   }
   include concat::setup
   concat { "${nginx::config_dir}/sites-available/${name}.conf":
-    ensure  => $ensure,
   }
 
   file { "${nginx::config_dir}/sites-enabled/${name}.conf":
