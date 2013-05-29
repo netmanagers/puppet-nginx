@@ -1,6 +1,6 @@
 # File Managed by Puppet 
 user <%= scope.lookupvar('nginx::process_user') %>;
-worker_processes <%= processorcount %>;
+worker_processes <%= @processorcount %>;
 
 error_log  <%= scope.lookupvar('nginx::log_dir')%>/error.log;
 pid        <%= scope.lookupvar('nginx::pid_file')%>;
