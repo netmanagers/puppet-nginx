@@ -5,7 +5,7 @@ server {
   root  <%= @docroot %>;
   server_name <%= @name %> <%= @serveraliases %>;
 
-  access_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= name %>.access.log;
-  error_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= name %>.error.log;
+  access_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= @name %>.access.log;
+  error_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= @name %>.error.log;
 
 }

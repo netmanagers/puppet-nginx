@@ -2,7 +2,7 @@
     proxy_pass <%= @proxy %>;
     proxy_read_timeout <%= @proxy_read_timeout %>;
 <%  @proxy_set_header.each do |header| -%>
-    proxy_set_header        <%= @header %>;
+    proxy_set_header        <%= header %>;
 <%  end %>
   }
 
