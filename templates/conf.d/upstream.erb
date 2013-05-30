@@ -1,5 +1,5 @@
-upstream <%= name %> {
+upstream <%= @name %> {
   <% members.each do |i| %>
-  server <%= i %>;
+  server <%= @i %>;
   <% end %>
 }
