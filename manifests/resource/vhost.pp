@@ -1,4 +1,3 @@
-# define: nginx::resource::vhost
 #
 # This definition creates a virtual host
 #
@@ -32,20 +31,26 @@
 #    ssl_key  => '/tmp/server.pem',
 #  }
 define nginx::resource::vhost(
-  $ensure             = 'present',
-  $listen_ip          = '*',
-  $listen_port        = '80',
-  $ipv6_enable        = false,
-  $ipv6_listen_ip     = '::',
-  $ipv6_listen_port   = '80',
-  $server_name        = $name,
-  $ssl                = absent,
-  $ssl_cert           = undef,
-  $ssl_key            = undef,
-  $proxy              = undef,
-  $proxy_read_timeout = '90',
-  $index_files        = ['index.html', 'index.htm', 'index.php'],
-  $www_root           = undef
+  $ensure              = 'present',
+  $listen_ip           = '*',
+  $listen_port         = '80',
+  $ipv6_enable         = false,
+  $ipv6_listen_ip      = '::',
+  $ipv6_listen_port    = '80',
+  $server_name         = $name,
+  $ssl                 = absent,
+  $ssl_cert            = undef,
+  $ssl_key             = undef,
+  $proxy               = undef,
+  $proxy_read_timeout  = '90',
+  $index_files         = ['index.html', 'index.htm', 'index.php'],
+  $template_header     = 'nginx/vhost/vhost_header.erb',
+  $template_footer     = 'nginx/vhost/vhost_footer.erb',
+  $template_ssl_header = 'nginx/vhost/vhost_ssl_header.erb',
+  $template_ssl_footer = 'nginx/vhost/vhost_footer.erb',
+  $template_proxy      = 'nginx/vhost/vhost_location_proxy.erb',
+  $template_directory  = 'nginx/vhost/vhost_location_directory.erb',
+  $www_root            = undef
 ) {
 
   File {
@@ -83,7 +88,7 @@ define nginx::resource::vhost(
   # Create the base configuration file reference.
   concat::fragment { "${name}+01.tmp":
     order   => '01',
-    content => template('nginx/vhost/vhost_header.erb'),
+    content => template("${template_header}"),
     ensure  => $ensure,
     notify  => $nginx::manage_service_autorestart,
     target  => "${nginx::config_dir}/sites-available/${name}.conf",
@@ -99,12 +104,14 @@ define nginx::resource::vhost(
     proxy_read_timeout => $proxy_read_timeout,
     www_root           => $www_root,
     notify             => $nginx::manage_service_autorestart,
+    template_proxy     => $template_proxy,
+    template_directory => $template_directory,
   }
 
   # Create a proper file close stub.
   concat::fragment { "${name}+69.tmp":
     order   => '69',
-    content => template('nginx/vhost/vhost_footer.erb'),
+    content => template("${template_footer}"),
     ensure  => $ensure,
     notify  => $nginx::manage_service_autorestart,
     target  => "${nginx::config_dir}/sites-available/${name}.conf",
@@ -113,14 +120,14 @@ define nginx::resource::vhost(
   # Create SSL File Stubs if SSL is enabled
   concat::fragment { "${name}+70-ssl.tmp":
     order   => '70',
-    content => template('nginx/vhost/vhost_ssl_header.erb'),
+    content => template("${template_ssl_header}"),
     ensure  => $ssl,
     notify  => $nginx::manage_service_autorestart,
     target  => "${nginx::config_dir}/sites-available/${name}.conf",
   }
   concat::fragment { "${name}+99-ssl.tmp":
     order   => '99',
-    content => template('nginx/vhost/vhost_footer.erb'),
+    content => template("${template_footer}"),
     ensure  => $ssl,
     notify  => $nginx::manage_service_autorestart,
     target  => "${nginx::config_dir}/sites-available/${name}.conf",

@@ -145,4 +145,11 @@ You have 2 different options to manage virtual hosts
   and it provides more flexibility in the management of virtual hosts and single location
   statements (with the nginx::resource::location define).
 
+* Templates used by nginx::resource can be overriden
+
+        nginx::resource::vhost { 'mydomain.com' :
+          www_root        => '/var/www/mydomain',
+          template_header => 'my_module/nginx/header.erb',
+        }
+
 [![Build Status](https://travis-ci.org/example42/puppet-nginx.png?branch=master)](https://travis-ci.org/example42/puppet-nginx)

@@ -35,6 +35,8 @@ define nginx::resource::location(
   $proxy_set_header   = ['Host $host', 'X-Real-IP $remote_addr', 'X-Forwarded-For $proxy_add_x_forwarded_for', 'X-Forwarded-Proto $scheme' ],
   $ssl                = false,
   $option             = undef,
+  $template_proxy     = 'nginx/vhost/vhost_location_proxy.erb',
+  $template_directory = 'nginx/vhost/vhost_location_directory.erb',
   $location
 ) {
   File {
@@ -52,9 +54,9 @@ define nginx::resource::location(
 
   # Use proxy template if $proxy is defined, otherwise use directory template.
   if ($proxy != undef) {
-    $content_real = template('nginx/vhost/vhost_location_proxy.erb')
+    $content_real = template("${template_proxy}")
   } else {
-    $content_real = template('nginx/vhost/vhost_location_directory.erb')
+    $content_real = template("${template_directory}")
   }
 
   ## Check for various error condtiions
