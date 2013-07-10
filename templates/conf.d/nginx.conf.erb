@@ -11,7 +11,7 @@ events {
 }
 
 http {
-  server_tokens off
+  server_tokens off;
   include       <%= scope.lookupvar('nginx::config_dir')%>/mime.types;
   default_type  application/octet-stream;
 
