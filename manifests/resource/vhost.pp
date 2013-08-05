@@ -9,6 +9,8 @@
 #                          support exists on your system before enabling.
 #   [*ipv6_listen_ip*]   - Default IPv6 Address for NGINX to listen with this vHost on. Defaults to all interfaces (::)
 #   [*ipv6_listen_port*] - Default IPv6 Port for NGINX to listen with this vHost on. Defaults to TCP 80
+#   [*default_server*]   - BOOL value to mark this server as default server which is choosen if no hostname is given on the request.
+#                          Default: false. Example: default_server => 'true'
 #   [*index_files*]      - Default index files for NGINX to read when traversing a directory
 #   [*proxy*]            - Proxy server(s) for the root location to connect to.  Accepts a single value, can be used in
 #                          conjunction with nginx::resource::upstream
@@ -37,6 +39,7 @@ define nginx::resource::vhost(
   $ipv6_enable         = false,
   $ipv6_listen_ip      = '::',
   $ipv6_listen_port    = '80',
+  $default_server      = false,
   $server_name         = $name,
   $ssl                 = absent,
   $ssl_cert            = undef,
