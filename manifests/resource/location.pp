@@ -14,6 +14,7 @@
 #                            with nginx::resource::upstream
 #   [*proxy_read_timeout*] - Override the default the proxy read timeout value of 90 seconds
 #   [*ssl*]                - Indicates whether to setup SSL bindings for this location.
+#   [*mixin_ssl*]          - Indicates whether SSL directive is to be put into the same file (only for backward compatibility)
 #   [*option*]             - Reserved for future use
 #
 # Actions:
@@ -38,6 +39,7 @@ define nginx::resource::location(
   $proxy_set_header   = ['Host $host', 'X-Real-IP $remote_addr', 'X-Forwarded-For $proxy_add_x_forwarded_for', 'X-Forwarded-Proto $scheme' ],
   $ssl                = false,
   $option             = undef,
+  $mixin_ssl          = undef,
   $template_proxy     = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory = 'nginx/vhost/vhost_location_directory.erb',
   $template_redirect  = 'nginx/vhost/vhost_location_redirect.erb',
@@ -92,11 +94,13 @@ define nginx::resource::location(
     target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
   }
 
-  ## Only create SSL Specific locations if $ssl is true.
-  concat::fragment { "${vhost}+80-ssl.tmp":
-    ensure  => $ssl,
-    order   => '80',
-    content => $content_real,
-    target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+  if ($mixin_ssl) {
+    ## Only create SSL Specific locations if $ssl is true.
+    concat::fragment { "${vhost}+80-ssl.tmp":
+      ensure  => $ssl,
+      order   => '80',
+      content => $content_real,
+      target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+    }
   }
 }
