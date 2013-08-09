@@ -7,6 +7,8 @@
 #   [*vhost*]              - Defines the default vHost for this location entry to include with
 #   [*location*]           - Specifies the URI associated with this location entry
 #   [*www_root*]           - Specifies the location on disk for files to be read from. Cannot be set in conjunction with $proxy
+#   [*redirect*]           - Specifies a 301 redirection. You can either set proxy, www_root or redirect.
+#                            The request_uri is automatically appended. Usage example: redirect => 'http://www.example.org'
 #   [*index_files*]        - Default index files for NGINX to read when traversing a directory
 #   [*proxy*]              - Proxy server(s) for a location to connect to. Accepts a single value, can be used in conjunction
 #                            with nginx::resource::upstream
@@ -29,6 +31,7 @@ define nginx::resource::location(
   $ensure             = present,
   $vhost              = undef,
   $www_root           = undef,
+  $redirect           = undef,
   $index_files        = ['index.html', 'index.htm', 'index.php'],
   $proxy              = undef,
   $proxy_read_timeout = '90',
@@ -37,6 +40,7 @@ define nginx::resource::location(
   $option             = undef,
   $template_proxy     = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory = 'nginx/vhost/vhost_location_directory.erb',
+  $template_redirect  = 'nginx/vhost/vhost_location_redirect.erb',
   $location
 ) {
   File {
@@ -56,33 +60,36 @@ define nginx::resource::location(
   if ($proxy != undef) {
     $content_real = template("${template_proxy}")
   } else {
-    $content_real = template("${template_directory}")
+    if ($redirect != undef) {
+      $content_real = template("${template_redirect}")
+    } else {
+      $content_real = template("${template_directory}")
+    }
   }
 
   ## Check for various error condtiions
   if ($vhost == undef) {
     fail('Cannot create a location reference without attaching to a virtual host')
   }
-  if (($www_root == undef) and ($proxy == undef)) {
-    fail('Cannot create a location reference without a www_root or proxy defined')
+  if (($www_root == undef) and ($proxy == undef) and ($redirect == undef)) {
+    fail('Cannot create a location reference without a www_root, proxy or redirect defined')
   }
   if (($www_root != undef) and ($proxy != undef)) {
     fail('Cannot define both directory and proxy in a virtual host')
   }
+  if (($www_root != undef) and ($redirect != undef)) {
+    fail('Cannot define both directory and redirect in a virtual host')
+  }
+  if (($proxy != undef) and ($redirect != undef)) {
+    fail('Cannot define both proxy and redirect in a virtual host')
+  }
 
   ## Create stubs for vHost File Fragment Pattern
-  concat::fragment { "${vhost}+50.tmp":
+  concat::fragment { "${vhost}+${location}+50.tmp":
     ensure  => $ensure,
     order   => '50',
     content => $content_real,
     target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
   }
 
-  ## Only create SSL Specific locations if $ssl is true.
-  concat::fragment { "${vhost}+80-ssl.tmp":
-    ensure  => $ssl,
-    order   => '80',
-    content => $content_real,
-    target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
-  }
 }
