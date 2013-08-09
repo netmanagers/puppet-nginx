@@ -152,4 +152,12 @@ You have 2 different options to manage virtual hosts
           template_header => 'my_module/nginx/header.erb',
         }
 
+* You can add additional locations for special handling like redirect:
+    nginx::resource::location {"www.example.org-wiki":
+    ensure             => present,
+        vhost              => 'www.example.org',
+        location           => '/wiki',
+        redirect           => 'http://wiki.example.org'
+    }
+
 [![Build Status](https://travis-ci.org/example42/puppet-nginx.png?branch=master)](https://travis-ci.org/example42/puppet-nginx)
