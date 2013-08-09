@@ -102,6 +102,7 @@ define nginx::resource::vhost(
     ensure             => $ensure,
     vhost              => $name,
     ssl                => $ssl,
+    mixin_ssl          => true,
     location           => '/',
     proxy              => $proxy,
     proxy_read_timeout => $proxy_read_timeout,
