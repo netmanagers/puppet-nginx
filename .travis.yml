@@ -18,4 +18,4 @@ matrix:
 gemfile: .gemfile
 notifications:
   email:
-    - patrick.feisthammel@citrin.ch
+    - al@lab42.it
