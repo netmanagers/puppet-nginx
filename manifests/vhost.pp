@@ -61,13 +61,14 @@ define nginx::vhost (
   # On Debian/Ubuntu manages sites-enabled 
   case $::operatingsystem {
     ubuntu,debian,mint: {
-      file { "ApacheVHostEnabled_$name":
+      file { "NginxVHostEnabled_$name":
         path    => "/etc/nginx/sites-enabled/${priority}-${name}.conf",
         ensure  => $enable ? {
           true  => "${nginx::vdir}/${priority}-${name}.conf",
           false => absent,
         },
         require => Package['nginx'],
+        notify  => Service['nginx'],
       }
     }
     redhat,centos,scientific,fedora: {
