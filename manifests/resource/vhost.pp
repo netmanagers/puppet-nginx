@@ -51,6 +51,7 @@ define nginx::resource::vhost(
   $template_footer     = 'nginx/vhost/vhost_footer.erb',
   $template_ssl_header = 'nginx/vhost/vhost_ssl_header.erb',
   $template_ssl_footer = 'nginx/vhost/vhost_footer.erb',
+  $template_ssl_proxy  = 'nginx/vhost/vhost_location_proxy.erb',
   $template_proxy      = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory  = 'nginx/vhost/vhost_location_directory.erb',
   $www_root            = undef
@@ -109,6 +110,7 @@ define nginx::resource::vhost(
     www_root           => $www_root,
     notify             => $nginx::manage_service_autorestart,
     template_proxy     => $template_proxy,
+    template_ssl_proxy => $template_ssl_proxy,
     template_directory => $template_directory,
   }
 

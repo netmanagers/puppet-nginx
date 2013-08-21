@@ -40,6 +40,7 @@ define nginx::resource::location(
   $ssl                = false,
   $option             = undef,
   $mixin_ssl          = undef,
+  $template_ssl_proxy = 'nginx/vhost/vhost_location_proxy.erb',
   $template_proxy     = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory = 'nginx/vhost/vhost_location_directory.erb',
   $template_redirect  = 'nginx/vhost/vhost_location_redirect.erb',
@@ -60,12 +61,14 @@ define nginx::resource::location(
 
   # Use proxy template if $proxy is defined, otherwise use directory template.
   if ($proxy != undef) {
-    $content_real = template("${template_proxy}")
+    $content_real     = template("${template_proxy}")
+    $content_ssl_real = template("${template_ssl_proxy}")
   } else {
     if ($redirect != undef) {
       $content_real = template("${template_redirect}")
     } else {
-      $content_real = template("${template_directory}")
+      $content_real     = template("${template_directory}")
+      $content_ssl_real = template("${template_directory}")
     }
   }
 
@@ -99,7 +102,7 @@ define nginx::resource::location(
     concat::fragment { "${vhost}+${location}+80-ssl.tmp":
       ensure  => $ssl,
       order   => '80',
-      content => $content_real,
+      content => $content_ssl_real,
       target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
     }
   }
