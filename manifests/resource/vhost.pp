@@ -33,7 +33,7 @@
 #    ssl_key  => '/tmp/server.pem',
 #  }
 define nginx::resource::vhost(
-  $ensure              = 'present',
+  $ensure              = present,
   $listen_ip           = '*',
   $listen_port         = '80',
   $ipv6_enable         = false,
@@ -64,6 +64,7 @@ define nginx::resource::vhost(
     require => Package['nginx']
   }
 
+  include nginx
   include concat::setup
 
   # Some OS specific settings:
@@ -72,11 +73,13 @@ define nginx::resource::vhost(
     ubuntu,debian,mint: {
       $file_real = "${nginx::config_dir}/sites-available/${name}.conf"
 
+      $manage_file => $ensure ? {
+        present => link,
+        absent  => absent,
+      }
+
       file { "${nginx::config_dir}/sites-enabled/${name}.conf":
-        ensure  => $ensure ? {
-          true  => 'link',
-          false => absent,
-        },
+        ensure  => $manage_file,
         target  => $file_real,
         require => [Package['nginx'], File[$file_real], ],
         notify  => Service['nginx'],

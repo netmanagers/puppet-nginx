@@ -30,11 +30,13 @@ define nginx::resource::upstream (
     mode  => '0644',
   }
 
+  $real_file = $ensure ? {
+    'absent' => absent,
+    default  => 'file',
+  }
+
   file { "${nginx::config_dir}/conf.d/${name}-upstream.conf":
-    ensure   => $ensure ? {
-      'absent' => absent,
-      default  => 'file',
-    },
+    ensure   => $real_file,
     content  => template($template_upstream),
     notify   => $nginx::manage_service_autorestart,
   }
