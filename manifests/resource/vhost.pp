@@ -73,7 +73,7 @@ define nginx::resource::vhost(
       $file_real = "${nginx::config_dir}/sites-available/${name}.conf"
 
       file { "${nginx::config_dir}/sites-enabled/${name}.conf":
-        ensure  => $enable ? {
+        ensure  => $ensure ? {
           true  => 'link',
           false => absent,
         },
