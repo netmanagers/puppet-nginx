@@ -63,17 +63,36 @@ define nginx::resource::vhost(
     mode    => '0644',
     require => Package['nginx']
   }
+  
   include concat::setup
-  concat { "${nginx::config_dir}/sites-available/${name}.conf":
+
+  # Some OS specific settings:
+  # On Debian/Ubuntu manages sites-enabled 
+  case $::operatingsystem {
+    ubuntu,debian,mint: {
+      $file_real = "${nginx::config_dir}/sites-available/${name}.conf"
+
+      file { "${nginx::config_dir}/sites-enabled/${name}.conf":
+        ensure  => $enable ? {
+          true  => 'link',
+          false => absent,
+        },
+        target  => $file_real,
+        require => [ Package['nginx'],
+                     File[$file_real],
+                   ],
+        notify  => Service['nginx'],
+      }
+    },
+    redhat,centos,scientific,fedora: {
+      $file_real = "${nginx::config_dir}/conf.d/${name}.conf",
+      # include nginx::redhat
+    },
+    default: { }
   }
 
-  file { "${nginx::config_dir}/sites-enabled/${name}.conf":
-    ensure  => $ensure ? {
-      'absent' => absent,
-       default  => 'link',
-    },
-    target => "${nginx::config_dir}/sites-available/${name}.conf",
-  }
+
+  concat { $file_real }
 
   # Add IPv6 Logic Check - Nginx service will not start if ipv6 is enabled
   # and support does not exist for it in the kernel.
@@ -95,7 +114,7 @@ define nginx::resource::vhost(
     content => template("${template_header}"),
     ensure  => $ensure,
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
 
   # Create the default location reference for the vHost
@@ -120,7 +139,7 @@ define nginx::resource::vhost(
     content => template("${template_footer}"),
     ensure  => $ensure,
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
 
   # Create SSL File Stubs if SSL is enabled
@@ -129,13 +148,13 @@ define nginx::resource::vhost(
     content => template("${template_ssl_header}"),
     ensure  => $ssl,
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
   concat::fragment { "${name}+99-ssl.tmp":
     order   => '99',
     content => template("${template_footer}"),
     ensure  => $ssl,
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
 }

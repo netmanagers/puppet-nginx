@@ -59,6 +59,11 @@ define nginx::resource::location(
     default  => file,
   }
 
+  $file_real = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => "${nginx::config_dir}/sites-available/${vhost}.conf",
+    default                   => "${nginx::config_dir}/conf.d/${vhost}.conf",
+  }
+
   # Use proxy template if $proxy is defined, otherwise use directory template.
   if ($proxy != undef) {
     $content_real     = template("${template_proxy}")
@@ -94,7 +99,7 @@ define nginx::resource::location(
     ensure  => $ensure_real,
     order   => '50',
     content => $content_real,
-    target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+    target  => $file_real,
   }
 
   if ($mixin_ssl) {
@@ -103,7 +108,7 @@ define nginx::resource::location(
       ensure  => $ssl,
       order   => '80',
       content => $content_ssl_real,
-      target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+      target  => $file_real,
     }
   }
 }
