@@ -73,7 +73,7 @@ define nginx::resource::vhost(
     ubuntu,debian,mint: {
       $file_real = "${nginx::config_dir}/sites-available/${name}.conf"
 
-      $manage_file => $ensure ? {
+      $manage_file = $ensure ? {
         present => link,
         absent  => absent,
       }
