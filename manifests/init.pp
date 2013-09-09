@@ -147,7 +147,7 @@
 #   Specified keepalive timeout. Default is 65(ms).
 #
 # [*client_max_body_size*]
-#   Specified the max body size of client. Default is 10mb. 
+#   Specified the max body size of client. Default is 10mb.
 #   Increase this param if your nginx is an upload server.
 #
 # [*service_status*]

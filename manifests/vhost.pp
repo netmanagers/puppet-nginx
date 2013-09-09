@@ -37,12 +37,12 @@ define nginx::vhost (
   include nginx::params
 
   $real_owner = $owner ? {
-    ''      => "${nginx::config_file_owner}",
+    ''      => $nginx::config_file_owner,
     default => $owner,
   }
 
   $real_groupowner = $groupowner ? {
-    ''      => "${nginx::config_file_group}",
+    ''      => $nginx::config_file_group,
     default => $groupowner,
   }
 
@@ -58,12 +58,12 @@ define nginx::vhost (
   }
 
   # Some OS specific settings:
-  # On Debian/Ubuntu manages sites-enabled 
+  # On Debian/Ubuntu manages sites-enabled
   case $::operatingsystem {
     ubuntu,debian,mint: {
-      file { "NginxVHostEnabled_$name":
-        path    => "/etc/nginx/sites-enabled/${priority}-${name}.conf",
+      file { "NginxVHostEnabled_${name}":
         ensure  => $enable ? {
+        path    => "/etc/nginx/sites-enabled/${priority}-${name}.conf",
           true  => "${nginx::vdir}/${priority}-${name}.conf",
           false => absent,
         },

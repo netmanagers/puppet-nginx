@@ -20,9 +20,9 @@
 #    ],
 #  }
 define nginx::resource::upstream (
+  $members,
   $ensure            = 'present',
   $template_upstream = 'nginx/conf.d/upstream.erb',
-  $members
 ) {
   File {
     owner => 'root',
@@ -35,7 +35,7 @@ define nginx::resource::upstream (
       'absent' => absent,
       default  => 'file',
     },
-    content  => template("${template_upstream}"),
+    content  => template($template_upstream),
     notify   => $nginx::manage_service_autorestart,
   }
 }
