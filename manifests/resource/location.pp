@@ -44,7 +44,7 @@ define nginx::resource::location(
   $template_proxy     = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory = 'nginx/vhost/vhost_location_directory.erb',
   $template_redirect  = 'nginx/vhost/vhost_location_redirect.erb',
-  $location
+  $location           = $title,
 ) {
   File {
     owner  => 'root',
@@ -59,16 +59,21 @@ define nginx::resource::location(
     default  => file,
   }
 
+  $file_real = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => "${nginx::config_dir}/sites-available/${vhost}.conf",
+    default                   => "${nginx::config_dir}/conf.d/${vhost}.conf",
+  }
+
   # Use proxy template if $proxy is defined, otherwise use directory template.
   if ($proxy != undef) {
-    $content_real     = template("${template_proxy}")
-    $content_ssl_real = template("${template_ssl_proxy}")
+    $content_real     = template($template_proxy)
+    $content_ssl_real = template($template_ssl_proxy)
   } else {
     if ($redirect != undef) {
-      $content_real = template("${template_redirect}")
+      $content_real = template($template_redirect)
     } else {
-      $content_real     = template("${template_directory}")
-      $content_ssl_real = template("${template_directory}")
+      $content_real     = template($template_directory)
+      $content_ssl_real = template($template_directory)
     }
   }
 
@@ -91,10 +96,10 @@ define nginx::resource::location(
 
   ## Create stubs for vHost File Fragment Pattern
   concat::fragment { "${vhost}+${location}+50.tmp":
-    ensure  => $ensure,
+    ensure  => $ensure_real,
     order   => '50',
     content => $content_real,
-    target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+    target  => $file_real,
   }
 
   if ($mixin_ssl) {
@@ -103,7 +108,7 @@ define nginx::resource::location(
       ensure  => $ssl,
       order   => '80',
       content => $content_ssl_real,
-      target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+      target  => $file_real,
     }
   }
 }

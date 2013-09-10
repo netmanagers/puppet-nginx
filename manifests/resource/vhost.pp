@@ -33,7 +33,7 @@
 #    ssl_key  => '/tmp/server.pem',
 #  }
 define nginx::resource::vhost(
-  $ensure              = 'present',
+  $ensure              = present,
   $listen_ip           = '*',
   $listen_port         = '80',
   $ipv6_enable         = false,
@@ -63,21 +63,41 @@ define nginx::resource::vhost(
     mode    => '0644',
     require => Package['nginx']
   }
+
+  include nginx
   include concat::setup
-  concat { "${nginx::config_dir}/sites-available/${name}.conf":
+
+  # Some OS specific settings:
+  # On Debian/Ubuntu manages sites-enabled
+  case $::operatingsystem {
+    ubuntu,debian,mint: {
+      $file_real = "${nginx::config_dir}/sites-available/${name}.conf"
+
+      $manage_file = $ensure ? {
+        present => link,
+        absent  => absent,
+      }
+
+      file { "${nginx::config_dir}/sites-enabled/${name}.conf":
+        ensure  => $manage_file,
+        target  => $file_real,
+        require => [Package['nginx'], File[$file_real], ],
+        notify  => Service['nginx'],
+      }
+    }
+    redhat,centos,scientific,fedora: {
+      $file_real = "${nginx::config_dir}/conf.d/${name}.conf"
+      # include nginx::redhat
+    }
+    default: { }
   }
 
-  file { "${nginx::config_dir}/sites-enabled/${name}.conf":
-    ensure  => $ensure ? {
-      'absent' => absent,
-       default  => 'link',
-    },
-    target => "${nginx::config_dir}/sites-available/${name}.conf",
-  }
+
+  concat { $file_real: }
 
   # Add IPv6 Logic Check - Nginx service will not start if ipv6 is enabled
   # and support does not exist for it in the kernel.
-  if ($ipv6_enable == 'true') and ($ipaddress6)  {
+  if ($ipv6_enable == true) and ($ipaddress6)  {
     warning('nginx: IPv6 support is not enabled or configured properly')
   }
 
@@ -91,11 +111,11 @@ define nginx::resource::vhost(
   # Use the File Fragment Pattern to construct the configuration files.
   # Create the base configuration file reference.
   concat::fragment { "${name}+01.tmp":
-    order   => '01',
-    content => template("${template_header}"),
     ensure  => $ensure,
+    order   => '01',
+    content => template($template_header),
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
 
   # Create the default location reference for the vHost
@@ -116,26 +136,26 @@ define nginx::resource::vhost(
 
   # Create a proper file close stub.
   concat::fragment { "${name}+69.tmp":
-    order   => '69',
-    content => template("${template_footer}"),
     ensure  => $ensure,
+    order   => '69',
+    content => template($template_footer),
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
 
   # Create SSL File Stubs if SSL is enabled
   concat::fragment { "${name}+70-ssl.tmp":
-    order   => '70',
-    content => template("${template_ssl_header}"),
     ensure  => $ssl,
+    order   => '70',
+    content => template($template_ssl_header),
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
   concat::fragment { "${name}+99-ssl.tmp":
-    order   => '99',
-    content => template("${template_footer}"),
     ensure  => $ssl,
+    order   => '99',
+    content => template($template_footer),
     notify  => $nginx::manage_service_autorestart,
-    target  => "${nginx::config_dir}/sites-available/${name}.conf",
+    target  => $file_real,
   }
 }
