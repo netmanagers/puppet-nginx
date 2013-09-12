@@ -59,12 +59,12 @@ define nginx::resource::location(
   $bool_create_www_root = any2bool($create_www_root)
 
   $real_owner = $owner ? {
-    ''      => "${nginx::process_user}",
+    ''      => "${nginx::config_file_owner}",
     default => $owner,
   }
 
   $real_groupowner = $groupowner ? {
-    ''      => "${nginx::process_user}",
+    ''      => "${nginx::config_file_group}",
     default => $groupowner,
   }
 
