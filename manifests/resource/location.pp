@@ -32,6 +32,9 @@ define nginx::resource::location(
   $ensure             = present,
   $vhost              = undef,
   $www_root           = undef,
+  $create_www_root    = false,
+  $owner              = '',
+  $groupowner         = '',
   $redirect           = undef,
   $index_files        = ['index.html', 'index.htm', 'index.php'],
   $proxy              = undef,
@@ -51,6 +54,18 @@ define nginx::resource::location(
     group  => 'root',
     mode   => '0644',
     notify => $nginx::manage_service_autorestart,
+  }
+
+  $bool_create_www_root = any2bool($create_www_root)
+
+  $real_owner = $owner ? {
+    ''      => $nginx::config_file_owner,
+    default => $owner,
+  }
+
+  $real_groupowner = $groupowner ? {
+    ''      => $nginx::config_file_group,
+    default => $groupowner,
   }
 
   ## Shared Variables
@@ -92,6 +107,14 @@ define nginx::resource::location(
   }
   if (($proxy != undef) and ($redirect != undef)) {
     fail('Cannot define both proxy and redirect in a virtual host')
+  }
+
+  if $bool_create_www_root == true {
+    file { $www_root:
+      ensure => directory,
+      owner  => $real_owner,
+      group  => $real_groupowner,
+    }
   }
 
   ## Create stubs for vHost File Fragment Pattern

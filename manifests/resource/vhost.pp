@@ -48,13 +48,18 @@ define nginx::resource::vhost(
   $proxy_read_timeout  = '90',
   $index_files         = ['index.html', 'index.htm', 'index.php'],
   $template_header     = 'nginx/vhost/vhost_header.erb',
+  $template_fastcgi    = 'nginx/vhost/vhost_fastcgi.erb',
   $template_footer     = 'nginx/vhost/vhost_footer.erb',
   $template_ssl_header = 'nginx/vhost/vhost_ssl_header.erb',
   $template_ssl_footer = 'nginx/vhost/vhost_footer.erb',
   $template_ssl_proxy  = 'nginx/vhost/vhost_location_proxy.erb',
   $template_proxy      = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory  = 'nginx/vhost/vhost_location_directory.erb',
-  $www_root            = undef
+  $www_root            = undef,
+  $create_www_root     = false,
+  $owner               = '',
+  $groupowner          = '',
+  $fastcgi             = absent
 ) {
 
   File {
@@ -65,7 +70,18 @@ define nginx::resource::vhost(
   }
 
   include nginx
+  include nginx::params
   include concat::setup
+
+  $real_owner = $owner ? {
+    ''      => "${nginx::process_user}",
+    default => $owner,
+  }
+
+  $real_groupowner = $groupowner ? {
+    ''      => "${nginx::process_user}",
+    default => $groupowner,
+  }
 
   # Some OS specific settings:
   # On Debian/Ubuntu manages sites-enabled
@@ -128,10 +144,21 @@ define nginx::resource::vhost(
     proxy              => $proxy,
     proxy_read_timeout => $proxy_read_timeout,
     www_root           => $www_root,
+    create_www_root    => $create_www_root,
+    owner              => $real_owner,
+    groupowner         => $real_groupowner,
     notify             => $nginx::manage_service_autorestart,
     template_proxy     => $template_proxy,
     template_ssl_proxy => $template_ssl_proxy,
     template_directory => $template_directory,
+  }
+
+  concat::fragment { "${name}+68-fastcgi.tmp":
+    ensure  => $fastcgi,
+    order   => '68',
+    content => template("${template_fastcgi}"),
+    notify  => $nginx::manage_service_autorestart,
+    target  => $file_real,
   }
 
   # Create a proper file close stub.
