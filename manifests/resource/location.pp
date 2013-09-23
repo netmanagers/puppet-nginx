@@ -40,7 +40,9 @@ define nginx::resource::location(
   $proxy              = undef,
   $proxy_read_timeout = '90',
   $proxy_set_header   = ['Host $host', 'X-Real-IP $remote_addr', 'X-Forwarded-For $proxy_add_x_forwarded_for', 'X-Forwarded-Proto $scheme' ],
+  $proxy_redirect     = undef,
   $ssl                = false,
+  $ssl_only           = false,
   $option             = undef,
   $mixin_ssl          = undef,
   $template_ssl_proxy = 'nginx/vhost/vhost_location_proxy.erb',
@@ -57,6 +59,7 @@ define nginx::resource::location(
   }
 
   $bool_create_www_root = any2bool($create_www_root)
+  $bool_ssl_only = any2bool($ssl_only)
 
   $real_owner = $owner ? {
     ''      => $nginx::config_file_owner,
@@ -117,12 +120,15 @@ define nginx::resource::location(
     }
   }
 
+
   ## Create stubs for vHost File Fragment Pattern
-  concat::fragment { "${vhost}+${location}+50.tmp":
-    ensure  => $ensure_real,
-    order   => '50',
-    content => $content_real,
-    target  => $file_real,
+  if $bool_ssl_only != true {
+    concat::fragment { "${vhost}+${location}+50.tmp":
+      ensure  => $ensure_real,
+      order   => '50',
+      content => $content_real,
+      target  => $file_real,
+    }
   }
 
   if ($mixin_ssl) {
