@@ -27,14 +27,16 @@ define nginx::resource::upstream (
   $vhost             = undef,
   $template_upstream = 'nginx/conf.d/upstream.erb',
 ) {
+  File {
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    notify => $nginx::manage_service_autorestart,
+  }
+
   $ensure_real = $ensure ? {
     'absent' => absent,
     default  => file,
-  }
-
-  $file_real = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => "${nginx::config_dir}/sites-available/${vhost}.conf",
-    default                   => "${nginx::config_dir}/conf.d/${vhost}.conf",
   }
 
   ## Check for various error condtiions
@@ -42,11 +44,21 @@ define nginx::resource::upstream (
     fail('Cannot create an upstream reference without attaching to a virtual host')
   }
 
-  concat::fragment { "${vhost}+105-upstream.tmp":
-    ensure  => $ensure_real,
-    order   => '105',
-    content => template($template_upstream),
-    target  => $file_real,
-    notify  => $nginx::manage_service_autorestart,
+  case $::operatingsystem {
+    ubuntu,debian,mint: {
+      concat::fragment { "${vhost}+105-upstream.tmp":
+        ensure  => $ensure_real,
+        order   => '105',
+        content => template($template_upstream),
+        target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
+        notify  => $nginx::manage_service_autorestart,
+      }
+    }
+    default: {
+      file { "${nginx::config_dir}/conf.d/${vhost}-upstream.conf":
+        ensure   => $ensure_real,
+        content  => template($template_upstream),
+      }
+    }
   }
 }
