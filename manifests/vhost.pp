@@ -72,6 +72,13 @@ define nginx::vhost (
         require => Package['nginx'],
         notify  => Service['nginx'],
       }
+
+      # Remove the default nginx conf if it exists
+      file { "/etc/nginx/sites-enabled/default":
+        ensure  => absent,
+        require => Package['nginx'],
+        notify  => Service['nginx'],
+      }
     }
     redhat,centos,scientific,fedora: {
       # include nginx::redhat
