@@ -126,9 +126,9 @@ define nginx::resource::vhost(
 
   # Use the File Fragment Pattern to construct the configuration files.
   # Create the base configuration file reference.
-  concat::fragment { "${name}+01.tmp":
+  concat::fragment { "${name}+35.tmp":
     ensure  => $ensure,
-    order   => '01',
+    order   => '35',
     content => template($template_header),
     notify  => $nginx::manage_service_autorestart,
     target  => $file_real,

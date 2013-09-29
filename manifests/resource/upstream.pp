@@ -46,9 +46,9 @@ define nginx::resource::upstream (
 
   case $::operatingsystem {
     ubuntu,debian,mint: {
-      concat::fragment { "${vhost}+105-upstream.tmp":
+      concat::fragment { "${vhost}+30-upstream-${name}.tmp":
         ensure  => $ensure_real,
-        order   => '105',
+        order   => '30',
         content => template($template_upstream),
         target  => "${nginx::config_dir}/sites-available/${vhost}.conf",
         notify  => $nginx::manage_service_autorestart,
