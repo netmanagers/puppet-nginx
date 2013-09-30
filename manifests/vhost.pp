@@ -32,7 +32,7 @@ define nginx::vhost (
   $enable         = true,
   $owner          = '',
   $groupowner     = '',
-  $remove_default = false
+  $disable_default = false
 ) {
 
   include nginx
@@ -75,7 +75,7 @@ define nginx::vhost (
         notify  => Service['nginx'],
       }
 
-      if ($remove_default == true) {
+      if ($disable_default == true) {
         # Remove the default nginx conf if it exists
         file { "${nginx::config_dir}/sites-enabled/default":
           ensure  => absent,
