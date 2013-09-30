@@ -24,14 +24,16 @@
 #
 define nginx::vhost (
   $docroot,
-  $port          = '80',
-  $template      = 'nginx/vhost/vhost.conf.erb',
-  $priority      = '50',
-  $serveraliases = '',
+  $port           = '80',
+  $template       = 'nginx/vhost/vhost.conf.erb',
+  $priority       = '50',
+  $serveraliases  = '',
   $create_docroot = true,
-  $enable        = true,
-  $owner         = '',
-  $groupowner    = '' ) {
+  $enable         = true,
+  $owner          = '',
+  $groupowner     = '',
+  $remove_default = false
+) {
 
   include nginx
   include nginx::params
@@ -68,16 +70,18 @@ define nginx::vhost (
 
       file { "NginxVHostEnabled_${name}":
         ensure  => $manage_file,
-        path    => "/etc/nginx/sites-enabled/${priority}-${name}.conf",
+        path    => "${nginx::config_dir}/sites-enabled/${priority}-${name}.conf",
         require => Package['nginx'],
         notify  => Service['nginx'],
       }
 
-      # Remove the default nginx conf if it exists
-      file { "/etc/nginx/sites-enabled/default":
-        ensure  => absent,
-        require => Package['nginx'],
-        notify  => Service['nginx'],
+      if ($remove_default == true) {
+        # Remove the default nginx conf if it exists
+        file { "${nginx::config_dir}/sites-enabled/default":
+          ensure  => absent,
+          require => Package['nginx'],
+          notify  => Service['nginx'],
+        }
       }
     }
     redhat,centos,scientific,fedora: {
