@@ -47,7 +47,7 @@ define nginx::resource::location(
   $template_proxy     = 'nginx/vhost/vhost_location_proxy.erb',
   $template_directory = 'nginx/vhost/vhost_location_directory.erb',
   $template_redirect  = 'nginx/vhost/vhost_location_redirect.erb',
-  $location           = $title,
+  $location           = $title
 ) {
   File {
     owner  => 'root',
