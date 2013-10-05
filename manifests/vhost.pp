@@ -31,8 +31,7 @@ define nginx::vhost (
   $create_docroot = true,
   $enable         = true,
   $owner          = '',
-  $groupowner     = '',
-  $disable_default = false
+  $groupowner     = ''
 ) {
 
   include nginx
@@ -75,7 +74,7 @@ define nginx::vhost (
         notify  => Service['nginx'],
       }
 
-      if ($disable_default == true) {
+      if ($nginx::disable_default) {
         # Remove the default nginx conf if it exists
         file { "${nginx::config_dir}/sites-enabled/default":
           ensure  => absent,

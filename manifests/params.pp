@@ -102,6 +102,7 @@ class nginx::params {
   $absent = false
   $disable = false
   $disableboot = false
+  $disable_default = false
 
   ### General module variables that can have a site or per module default
   $monitor = false
