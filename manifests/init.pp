@@ -469,4 +469,20 @@ class nginx (
     }
   }
 
+  ### Remove the default nginx conf if it exists
+  if ($nginx::disable_default) {
+    case $::operatingsystem {
+      ubuntu,debian,mint: {
+        file { "${nginx::config_dir}/sites-enabled/default":
+          ensure  => absent,
+          require => Package['nginx'],
+          notify  => Service['nginx'],
+        }
+      }
+      redhat,centos,scientific,fedora: {
+        # nothing
+      }
+      default: { }
+    }
+  }
 }
