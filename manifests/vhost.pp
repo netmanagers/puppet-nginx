@@ -24,14 +24,15 @@
 #
 define nginx::vhost (
   $docroot,
-  $port          = '80',
-  $template      = 'nginx/vhost/vhost.conf.erb',
-  $priority      = '50',
-  $serveraliases = '',
+  $port           = '80',
+  $template       = 'nginx/vhost/vhost.conf.erb',
+  $priority       = '50',
+  $serveraliases  = '',
   $create_docroot = true,
-  $enable        = true,
-  $owner         = '',
-  $groupowner    = '' ) {
+  $enable         = true,
+  $owner          = '',
+  $groupowner     = ''
+) {
 
   include nginx
   include nginx::params
@@ -68,7 +69,7 @@ define nginx::vhost (
 
       file { "NginxVHostEnabled_${name}":
         ensure  => $manage_file,
-        path    => "/etc/nginx/sites-enabled/${priority}-${name}.conf",
+        path    => "${nginx::config_dir}/sites-enabled/${priority}-${name}.conf",
         require => Package['nginx'],
         notify  => Service['nginx'],
       }
