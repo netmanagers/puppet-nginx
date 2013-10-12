@@ -413,9 +413,9 @@ class nginx (
   }
 
   if $nginx::config_file_default_purge {
-    file { "nginx.default.site":
+    file { 'nginx.default.site':
       ensure  => absent,
-      path    => "/etc/nginx/sites-enabled/default",
+      path    => '/etc/nginx/sites-enabled/default',
       require => Package['nginx'],
       notify  => Service['nginx'],
     }
@@ -495,7 +495,7 @@ class nginx (
       /(?i:Redhat|Centos|Scientific|Dedora)/ => "${nginx::config_dir}/conf.d/default.conf",
     }
 
-    file { $default_file:
+    file { $default_site:
       ensure  => absent,
       require => Package[$nginx::package],
       notify  => Service[$nginx::service],

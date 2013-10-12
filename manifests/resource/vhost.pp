@@ -84,12 +84,12 @@ define nginx::resource::vhost(
   $bool_ssl_only = any2bool($ssl_only)
 
   $real_owner = $owner ? {
-    ''      => "${nginx::process_user}",
+    ''      => $nginx::process_user,
     default => $owner,
   }
 
   $real_groupowner = $groupowner ? {
-    ''      => "${nginx::process_user}",
+    ''      => $nginx::process_user,
     default => $groupowner,
   }
 
@@ -180,7 +180,7 @@ define nginx::resource::vhost(
     concat::fragment { "${name}+68-fastcgi.tmp":
       ensure  => $fastcgi,
       order   => '68',
-      content => template("${template_fastcgi}"),
+      content => template($template_fastcgi),
       notify  => $nginx::manage_service_autorestart,
       target  => $file_real,
     }
