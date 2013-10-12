@@ -18,6 +18,7 @@ class nginx::params {
   $worker_connections = 1024
   $keepalive_timeout = 65
   $client_max_body_size = '10m'
+  $types_hash_max_size = 1024
 
   ### Application related parameters
 
@@ -95,6 +96,7 @@ class nginx::params {
   $source = ''
   $source_dir = ''
   $source_dir_purge = false
+  $config_file_default_purge = false
   $template = ''
   $options = ''
   $service_autorestart = true

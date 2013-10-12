@@ -1,11 +1,17 @@
 server {
-  listen <% if defined? @listen_ip %><%= @listen_ip %>:<% end %>443<% if @default_server == 'true' %> default_server<% end %>;
+  listen <%= @ssl_listen_ip %>:<%= @ssl_listen_port %><% if @default_server == 'true' %> default_server<% end %>;
   <% if @ipv6_enable == 'true' && (defined? @ipaddress6) %>listen [<%= @ipv6_listen_ip %>]:<%= @ipv6_listen_port %> default ipv6only=on;<% end %>
   server_name  <%= @server_name %>;
 
   ssl on;
-  ssl_certificate      <%= @ssl_cert %>;
-  ssl_certificate_key  <%= @ssl_key %>;
+  ssl_certificate         <%= @ssl_cert %>;
+  ssl_certificate_key     <%= @ssl_key %>;
+<% unless @ssl_client_cert.nil? || @ssl_client_cert.empty? -%>
+  ssl_client_certificate  <%= @ssl_client_cert %>;
+<% end -%>
+<% unless @ssl_verify_client.nil? || @ssl_verify_client.empty? -%>
+  ssl_verify_client       <%= @ssl_verify_client %>;
+<% end -%>
 
   ssl_session_timeout  5m;
 
