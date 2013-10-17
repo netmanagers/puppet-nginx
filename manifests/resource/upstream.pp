@@ -21,7 +21,7 @@
 #  }
 define nginx::resource::upstream (
   $members,
-  $ensure            = 'present',
+  $ensure            = present,
   $template_upstream = 'nginx/conf.d/upstream.erb',
 ) {
   File {
@@ -32,12 +32,13 @@ define nginx::resource::upstream (
 
   $real_file = $ensure ? {
     'absent' => absent,
-    default  => 'file',
+    default  => file,
   }
 
   file { "${nginx::config_dir}/conf.d/${name}-upstream.conf":
     ensure   => $real_file,
     content  => template($template_upstream),
     notify   => $nginx::manage_service_autorestart,
+    require  => Package['nginx'],
   }
 }
