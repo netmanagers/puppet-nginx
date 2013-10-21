@@ -22,7 +22,7 @@ http {
   tcp_nodelay        on;
   client_max_body_size <%= scope.lookupvar('nginx::client_max_body_size')%>;
   keepalive_timeout  <%= scope.lookupvar('nginx::keepalive_timeout')%>;
-  types_hash_max_size <%= scope.lookupvar('nginx::types_hash_max_size') %>)
+  types_hash_max_size <%= scope.lookupvar('nginx::types_hash_max_size') %>;
 
   gzip         <%= scope.lookupvar('nginx::real_gzip')%>;
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
