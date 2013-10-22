@@ -4,7 +4,7 @@ describe 'nginx' do
 
   let(:title) { 'nginx' }
   let(:node) { 'rspec.example42.com' }
-  let(:facts) { { :ipaddress => '10.42.42.42' } }
+  let(:facts) { { :ipaddress => '10.42.42.42', :concat_basedir => '/var/lib/puppet/concat' } }
 
   describe 'Test standard installation' do
     it { should contain_package('nginx').with_ensure('present') }
