@@ -93,11 +93,12 @@ define nginx::resource::vhost(
     default => $groupowner,
   }
 
+  $file_real = "${nginx::config_dir}/${nginx::vdir}/${name}.conf"
+
   # Some OS specific settings:
   # On Debian/Ubuntu manages sites-enabled
   case $::operatingsystem {
     ubuntu,debian,mint: {
-      $file_real = "${nginx::config_dir}/sites-available/${name}.conf"
 
       $manage_file = $ensure ? {
         present => link,
@@ -112,7 +113,6 @@ define nginx::resource::vhost(
       }
     }
     redhat,centos,scientific,fedora: {
-      $file_real = "${nginx::config_dir}/conf.d/${name}.conf"
       # include nginx::redhat
     }
     default: { }
