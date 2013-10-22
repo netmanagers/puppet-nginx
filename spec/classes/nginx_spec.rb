@@ -119,6 +119,9 @@ http {
   gzip         on;
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
+
+  include /etc/nginx/conf.d/*.conf;
+
   include /etc/nginx/sites-available/*.conf;
 }
 '

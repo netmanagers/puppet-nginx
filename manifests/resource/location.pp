@@ -77,10 +77,7 @@ define nginx::resource::location(
     default  => file,
   }
 
-  $file_real = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => "${nginx::config_dir}/sites-available/${vhost}.conf",
-    default                   => "${nginx::config_dir}/conf.d/${vhost}.conf",
-  }
+  $file_real = "${nginx::config_dir}/${nginx::vdir}/${vhost}.conf"
 
   # Use proxy template if $proxy is defined, otherwise use directory template.
   if ($proxy != undef) {

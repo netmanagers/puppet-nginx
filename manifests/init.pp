@@ -293,6 +293,11 @@ class nginx (
   }
 
   ### Calculation of variables that dependes on arguments
+  # Debian uses TWO configs dirs separatedly
+  $cdir = $::operatingsystem ? {
+    default => "${nginx::config_dir}/conf.d",
+  }
+
   $vdir = $::operatingsystem ? {
     /(?i:Ubuntu|Debian|Mint)/ => "${nginx::config_dir}/sites-available",
     default                   => "${nginx::config_dir}/conf.d",

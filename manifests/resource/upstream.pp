@@ -35,7 +35,7 @@ define nginx::resource::upstream (
     default  => file,
   }
 
-  file { "${nginx::config_dir}/conf.d/${name}-upstream.conf":
+  file { "${nginx::config_dir}/${nginx::cdir}/${name}-upstream.conf":
     ensure   => $real_file,
     content  => template($template_upstream),
     notify   => $nginx::manage_service_autorestart,
