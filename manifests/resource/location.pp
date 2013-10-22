@@ -77,7 +77,7 @@ define nginx::resource::location(
     default  => file,
   }
 
-  $file_real = "${nginx::config_dir}/${nginx::vdir}/${vhost}.conf"
+  $file_real = "${nginx::vdir}/${vhost}.conf"
 
   # Use proxy template if $proxy is defined, otherwise use directory template.
   if ($proxy != undef) {
