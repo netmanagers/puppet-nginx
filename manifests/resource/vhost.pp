@@ -79,7 +79,6 @@ define nginx::resource::vhost(
 
   include nginx
   include nginx::params
-  include concat::setup
 
   $bool_ssl_only = any2bool($ssl_only)
 
@@ -93,7 +92,7 @@ define nginx::resource::vhost(
     default => $groupowner,
   }
 
-  $file_real = "${nginx::config_dir}/${nginx::vdir}/${name}.conf"
+  $file_real = "${nginx::vdir}/${name}.conf"
 
   # Some OS specific settings:
   # On Debian/Ubuntu manages sites-enabled
