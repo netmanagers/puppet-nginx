@@ -19,6 +19,7 @@ class nginx::params {
   $keepalive_timeout = 65
   $client_max_body_size = '10m'
   $types_hash_max_size = 1024
+  $sendfile = 'on'
 
   ### Application related parameters
 
