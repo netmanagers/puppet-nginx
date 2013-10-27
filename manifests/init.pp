@@ -153,6 +153,9 @@
 #   Specified the max body size of client. Default is 10mb.
 #   Increase this param if your nginx is an upload server.
 #
+# [*sendfile*]
+#   Activate or deactivate the usage of sendfile. Default is on.
+#
 # [*service_status*]
 #   If the nginx service init script supports status argument
 #
@@ -229,6 +232,7 @@ class nginx (
   $keepalive_timeout   = params_lookup( 'keepalive_timeout' ),
   $client_max_body_size  = params_lookup( 'client_max_body_size' ),
   $types_hash_max_size = params_lookup( 'types_hash_max_size' ),
+  $sendfile            = params_lookup( 'sendfile' ),
   $my_class            = params_lookup( 'my_class' ),
   $source              = params_lookup( 'source' ),
   $source_dir          = params_lookup( 'source_dir' ),
