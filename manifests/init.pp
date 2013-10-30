@@ -149,6 +149,10 @@
 # [*keepalive_timeout*]
 #   Specified keepalive timeout. Default is 65(ms).
 #
+# [*server_names_hash_bucket_size*]
+#   Specified the server_names_hash_bucket_size. Default is 64
+#   Increase this to powers of 2 if you are getting related errors
+#
 # [*client_max_body_size*]
 #   Specified the max body size of client. Default is 10mb.
 #   Increase this param if your nginx is an upload server.
@@ -230,6 +234,7 @@ class nginx (
   $gzip                = params_lookup( 'gzip' ),
   $worker_connections  = params_lookup( 'worker_connections' ),
   $keepalive_timeout   = params_lookup( 'keepalive_timeout' ),
+  $server_names_hash_bucket_size  = params_lookup( 'server_names_hash_bucket_size' ),
   $client_max_body_size  = params_lookup( 'client_max_body_size' ),
   $types_hash_max_size = params_lookup( 'types_hash_max_size' ),
   $sendfile            = params_lookup( 'sendfile' ),

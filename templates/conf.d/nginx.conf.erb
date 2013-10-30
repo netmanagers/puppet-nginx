@@ -22,6 +22,7 @@ http {
   tcp_nodelay        on;
   client_max_body_size <%= scope.lookupvar('nginx::client_max_body_size')%>;
   keepalive_timeout  <%= scope.lookupvar('nginx::keepalive_timeout')%>;
+  server_names_hash_bucket_size <%= scope.lookupvar('nginx::server_names_hash_bucket_size')%>;
   types_hash_max_size <%= scope.lookupvar('nginx::types_hash_max_size') %>;
 
   gzip         <%= scope.lookupvar('nginx::real_gzip')%>;

@@ -114,6 +114,7 @@ http {
   tcp_nodelay        on;
   client_max_body_size 10m;
   keepalive_timeout  65;
+  server_names_hash_bucket_size 64;
   types_hash_max_size 1024;
 
   gzip         on;
