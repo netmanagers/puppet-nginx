@@ -2,6 +2,7 @@ server {
   listen <%= @ssl_listen_ip %>:<%= @ssl_listen_port %><% if @default_server == 'true' %> default_server<% end %>;
   <% if @ipv6_enable == 'true' && (defined? @ipaddress6) %>listen [<%= @ipv6_listen_ip %>]:<%= @ipv6_listen_port %> default ipv6only=on;<% end %>
   server_name  <%= @server_name %>;
+  access_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= @name %>.access.log;
 
   ssl on;
   ssl_certificate         <%= @ssl_cert %>;
