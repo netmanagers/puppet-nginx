@@ -31,10 +31,5 @@ http {
 <% if scope.lookupvar('nginx::cdir') != '' %>
   include <%= scope.lookupvar('nginx::cdir')%>/*.conf;
 <% end %>
-<% if scope.lookupvar('::operatingsystem') =~ /(?i:Ubuntu|Debian|Mint)/ %>
-  include <%= scope.lookupvar('nginx::config_dir') %>/conf.d/*.conf;
-  include <%= scope.lookupvar('nginx::config_dir') %>/sites-enabled/*;
-<% else %>
   include <%= scope.lookupvar('nginx::vdir')%>/*.conf;
-<% end %>
 }
