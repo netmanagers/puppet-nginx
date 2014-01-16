@@ -427,11 +427,11 @@ class nginx (
 
   if $nginx::config_file_default_purge {
     $default_site = $::operatingsystem ? {
-      /(?i:Debian|Ubuntu|Mint)/              => "${nginx::config_dir}/sites-enabled/default",
+      /(?i:Debian|Ubuntu|Mint)/              => [ "${nginx::config_dir}/sites-enabled/default", "${nginx::config_dir}/sites-available/default" ],
       /(?i:Redhat|Centos|Scientific|Fedora)/ => "${nginx::config_dir}/conf.d/default.conf",
     }
 
-    file { 'nginx.default.site':
+    file { $default_site:
       ensure  => absent,
       require => Package[$nginx::package],
       notify  => Service[$nginx::service],
