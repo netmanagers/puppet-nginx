@@ -280,7 +280,6 @@ class nginx (
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' ),
-  $disable_default_site = params_lookup( 'disable_default_site' )
   ) inherits nginx::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -427,11 +426,15 @@ class nginx (
   }
 
   if $nginx::config_file_default_purge {
+    $default_site = $::operatingsystem ? {
+      /(?i:Debian|Ubuntu|Mint)/              => "${nginx::config_dir}/sites-enabled/default",
+      /(?i:Redhat|Centos|Scientific|Fedora)/ => "${nginx::config_dir}/conf.d/default.conf",
+    }
+
     file { 'nginx.default.site':
       ensure  => absent,
-      path    => '/etc/nginx/sites-enabled/default',
-      require => Package['nginx'],
-      notify  => Service['nginx'],
+      require => Package[$nginx::package],
+      notify  => Service[$nginx::service],
     }
   }
 
@@ -502,17 +505,4 @@ class nginx (
     }
   }
 
-  ### Remove the default nginx conf if it exists
-  if ($nginx::disable_default_site) {
-    $default_site = $::operatingsystem ? {
-      /(?i:Debian|Ubuntu|Mint)/              => "${nginx::config_dir}/sites-enabled/default",
-      /(?i:Redhat|Centos|Scientific|Dedora)/ => "${nginx::config_dir}/conf.d/default.conf",
-    }
-
-    file { $default_site:
-      ensure  => absent,
-      require => Package[$nginx::package],
-      notify  => Service[$nginx::service],
-    }
-  }
 }
