@@ -10,7 +10,7 @@
 #   [*ipv6_listen_ip*]   - Default IPv6 Address for NGINX to listen with this vHost on. Defaults to all interfaces (::)
 #   [*ipv6_listen_port*] - Default IPv6 Port for NGINX to listen with this vHost on. Defaults to TCP 80
 #   [*default_server*]   - BOOL value to mark this server as default server which is choosen if no hostname is given on the request.
-#                          Default: false. Example: default_server => 'true'
+#                          Default: false. Example: default_server => true
 #   [*index_files*]      - Default index files for NGINX to read when traversing a directory
 #   [*proxy*]            - Proxy server(s) for the root location to connect to.  Accepts a single value, can be used in
 #                          conjunction with nginx::resource::upstream
@@ -81,6 +81,8 @@ define nginx::resource::vhost(
   include nginx::params
 
   $bool_ssl_only = any2bool($ssl_only)
+  $bool_default_server = any2bool($default_server)
+  $bool_ipv6_enable = any2bool($ipv6_enable)
 
   $real_owner = $owner ? {
     ''      => $nginx::process_user,
@@ -122,7 +124,7 @@ define nginx::resource::vhost(
 
   # Add IPv6 Logic Check - Nginx service will not start if ipv6 is enabled
   # and support does not exist for it in the kernel.
-  if ($ipv6_enable == true) and ($ipaddress6)  {
+  if ($bool_ipv6_enable) and ($ipaddress6)  {
     warning('nginx: IPv6 support is not enabled or configured properly')
   }
 
