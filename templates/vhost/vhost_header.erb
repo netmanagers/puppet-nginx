@@ -5,6 +5,6 @@ server {
   server_name <%= @server_name %>;
   access_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= @name %>.access.log;
 
-  <% (defined? @www_root)  %>
+  <% if (defined? @www_root)  %>
   root  <%= @www_root %>;
   <% end %>
