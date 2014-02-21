@@ -2,8 +2,13 @@
 
 This is a Puppet nginx module from the second generation of Example42 Puppet Modules.
 
-Made by Alessandro Franceschi / Lab42
-Maintainer Javier Bertoli     / Netmanagers
+Made by 
+
+  * Alessandro Franceschi / Lab42
+
+Maintainer
+
+  * Javier Bertoli / Netmanagers
 
 The nginx::resource:: classes and relevant code has been derived from https://github.com/zertico/puppetlabs-nginx.git
 which is a fort of James Fryman /PuppetLabs original nginx module
