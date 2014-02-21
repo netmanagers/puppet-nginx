@@ -3,13 +3,14 @@
 This is a Puppet nginx module from the second generation of Example42 Puppet Modules.
 
 Made by Alessandro Franceschi / Lab42
+Maintainer Javier Bertoli     / Netmanagers
 
 The nginx::resource:: classes and relevant code has been derived from https://github.com/zertico/puppetlabs-nginx.git
 which is a fort of James Fryman /PuppetLabs original nginx module
 
 Official site: http://www.example42.com
 
-Official git repository: http://github.com/example42/puppet-nginx
+Official git repository: http://github.com/netmanagers/puppet-nginx
 
 Released under the terms of Apache 2 License.
 
@@ -161,4 +162,4 @@ You have 2 different options to manage virtual hosts
           redirect           => 'http://wiki.example.org'
         }
 
-[![Build Status](https://travis-ci.org/example42/puppet-nginx.png?branch=master)](https://travis-ci.org/example42/puppet-nginx)
+[![Build Status](https://travis-ci.org/netmanagers/puppet-nginx.png?branch=master)](https://travis-ci.org/netmanagers/puppet-nginx)
