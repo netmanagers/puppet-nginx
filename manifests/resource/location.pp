@@ -74,7 +74,7 @@ define nginx::resource::location(
   ## Shared Variables
   $ensure_real = $ensure ? {
     'absent' => absent,
-    default  => file,
+    default  => present,
   }
 
   $file_real = "${nginx::vdir}/${vhost}.conf"
