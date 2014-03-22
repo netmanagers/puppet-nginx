@@ -146,6 +146,10 @@
 # [*worker_connections*]
 #   Specified worker connections number. Default is 1024.
 #
+# [*multi_accept*]
+#   Activate or deactivate the usage of multi_accept.
+#   Default is on but it is then commented out in the default nginx template.
+#
 # [*keepalive_timeout*]
 #   Specified keepalive timeout. Default is 65(ms).
 #
@@ -233,6 +237,7 @@
 class nginx (
   $gzip                = params_lookup( 'gzip' ),
   $worker_connections  = params_lookup( 'worker_connections' ),
+  $multi_accept        = params_lookup( 'multi_accept' ),
   $keepalive_timeout   = params_lookup( 'keepalive_timeout' ),
   $server_names_hash_bucket_size  = params_lookup( 'server_names_hash_bucket_size' ),
   $client_max_body_size  = params_lookup( 'client_max_body_size' ),
