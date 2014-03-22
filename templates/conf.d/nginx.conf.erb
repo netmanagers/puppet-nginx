@@ -28,9 +28,9 @@ http {
   gzip         <%= scope.lookupvar('nginx::real_gzip')%>;
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-<% if scope.lookupvar('nginx::cdir') != '' &&
-      scope.lookupvar('nginx::cdir') != scope.lookupvar('nginx::vdir') %>
   include <%= scope.lookupvar('nginx::cdir')%>/*.conf;
+<% if scope.lookupvar('nginx::cdir') != '' &&
+      scope.lookupvar('nginx::cdir') != scope.lookupvar('nginx::vdir_enabled') %>
+  include <%= scope.lookupvar('nginx::vdir_enabled')%>/*;
 <% end %>
-  include <%= scope.lookupvar('nginx::vdir')%>/*.conf;
 }

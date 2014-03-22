@@ -106,7 +106,7 @@ define nginx::resource::vhost(
         absent  => absent,
       }
 
-      file { "${nginx::config_dir}/sites-enabled/${name}.conf":
+      file { "${nginx::vdir_enabled}/${name}.conf":
         ensure  => $manage_file,
         target  => $file_real,
         require => [Package['nginx'], File[$file_real], ],
