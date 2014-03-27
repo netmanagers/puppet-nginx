@@ -1,4 +1,4 @@
-source :rubygems
+source "https://rubygems.org"
 
 puppetversion = ENV['PUPPET_VERSION']
 gem 'rake', '~> 10.1.0'
