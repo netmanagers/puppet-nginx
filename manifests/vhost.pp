@@ -69,7 +69,7 @@ define nginx::vhost (
 
       file { "NginxVHostEnabled_${name}":
         ensure  => $manage_file,
-        path    => "${nginx::vdir_enabled}/${priority}-${name}.conf",
+        path    => "${nginx::vdir_enable}/${priority}-${name}.conf",
         require => Package['nginx'],
         notify  => Service['nginx'],
       }
