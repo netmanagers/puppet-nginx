@@ -9,5 +9,16 @@
     proxy_set_header        <%= header %>;
 <%  end %>
 <% end -%>
+<% unless @limit_except.nil? || @limit_except.empty? -%>
+    limit_except <%= @limit_except %> {
+      auth_basic <%= @auth_basic  %>;
+      auth_basic_user_file <%= @auth_basic_user_file  %>;
+    }
+<% else %>
+<% unless @auth_basic.nil? || @auth_basic.empty? -%>
+    auth_basic <%= @auth_basic  %>;
+    auth_basic_user_file <%= @auth_basic_user_file  %>;
+<% end -%>
+<% end -%>
   }
 
