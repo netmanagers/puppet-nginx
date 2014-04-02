@@ -2,7 +2,7 @@
 
 This is a Puppet nginx module from the second generation of Example42 Puppet Modules.
 
-Made by 
+Made by
 
   * Alessandro Franceschi / Lab42
 
@@ -63,10 +63,10 @@ For detailed info about the logic and usage patterns of Example42 modules read R
 
 
 ## USAGE - Overrides and Customizations
-* Use custom sources for main config file 
+* Use custom sources for main config file
 
         class { "nginx":
-          source => [ "puppet:///modules/lab42/nginx/nginx.conf-${hostname}" , "puppet:///modules/lab42/nginx/nginx.conf" ], 
+          source => [ "puppet:///modules/lab42/nginx/nginx.conf-${hostname}" , "puppet:///modules/lab42/nginx/nginx.conf" ],
         }
 
 
@@ -77,17 +77,17 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           source_dir_purge => false, # Set to true to purge any existing file not present in $source_dir
         }
 
-* Use custom template for main config file 
+* Use custom template for main config file
 
         class { "nginx":
-          template => "example42/nginx/nginx.conf.erb",      
+          template => "example42/nginx/nginx.conf.erb",
         }
 
 * Define custom options that can be used in a custom template without the
   need to add parameters to the nginx class
 
         class { "nginx":
-          template => "example42/nginx/nginx.conf.erb",    
+          template => "example42/nginx/nginx.conf.erb",
           options  => {
             'LogLevel' => 'INFO',
             'UsePAM'   => 'yes',
@@ -101,20 +101,20 @@ For detailed info about the logic and usage patterns of Example42 modules read R
         }
 
 
-## USAGE - Example42 extensions management 
+## USAGE - Example42 extensions management
 * Activate puppi (recommended, but disabled by default)
   Note that this option requires the usage of Example42 puppi module
 
-        class { "nginx": 
+        class { "nginx":
           puppi    => true,
         }
 
 * Activate puppi and use a custom puppi_helper template (to be provided separately with
-  a puppi::helper define ) to customize the output of puppi commands 
+  a puppi::helper define ) to customize the output of puppi commands
 
         class { "nginx":
           puppi        => true,
-          puppi_helper => "myhelper", 
+          puppi_helper => "myhelper",
         }
 
 * Activate automatic monitoring (recommended, but disabled by default)
@@ -125,10 +125,10 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           monitor_tool => [ "nagios" , "monit" , "munin" ],
         }
 
-* Activate automatic firewalling 
+* Activate automatic firewalling
   This option requires the usage of Example42 firewall and relevant firewall tools modules
 
-        class { "nginx":       
+        class { "nginx":
           firewall      => true,
           firewall_tool => "iptables",
           firewall_src  => "10.42.0.0/24",

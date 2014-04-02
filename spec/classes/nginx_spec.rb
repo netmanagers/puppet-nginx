@@ -31,7 +31,7 @@ describe 'nginx' do
   describe 'Test decommissioning - absent' do
     let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42'} }
 
-    it 'should remove Package[nginx]' do should contain_package('nginx').with_ensure('absent') end 
+    it 'should remove Package[nginx]' do should contain_package('nginx').with_ensure('absent') end
     it 'should stop Service[nginx]' do should contain_service('nginx').with_ensure('stopped') end
     it 'should not enable at boot Service[nginx]' do should contain_service('nginx').with_enable('false') end
     it 'should remove nginx configuration file' do should contain_file('nginx.conf').with_ensure('absent') end
@@ -60,7 +60,7 @@ describe 'nginx' do
 
   describe 'Test decommissioning - disableboot' do
     let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42'} }
-  
+
     it { should contain_package('nginx').with_ensure('present') }
     it { should_not contain_service('nginx').with_ensure('present') }
     it { should_not contain_service('nginx').with_ensure('absent') }
@@ -72,17 +72,17 @@ describe 'nginx' do
     it 'should keep a firewall rule' do
       should contain_firewall('nginx_tcp_42').with_enable('true')
     end
-  end 
+  end
 
   describe 'Test customizations - template' do
     let(:facts) { { :operatingsystem => 'Debian', :processorcount => 8 } }
     let(:params) do
-      { 
+      {
         :template => "nginx/conf.d/nginx.conf.erb"
       }
     end
     let(:expected) do
-'# File Managed by Puppet 
+'# File Managed by Puppet
 user www-data;
 worker_processes 8;
 
@@ -112,10 +112,10 @@ http {
   gzip         on;
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-
   include /etc/nginx/conf.d/*.conf;
 
-  include /etc/nginx/sites-available/*.conf;
+  include /etc/nginx/sites-enabled/*;
+
 }
 '
     end
@@ -204,7 +204,7 @@ http {
     it 'should generate firewall resources' do
       should contain_firewall('nginx_tcp_42').with_tool('iptables')
     end
-    it 'should generate puppi resources ' do 
+    it 'should generate puppi resources ' do
       should contain_firewall('nginx_tcp_42').with_tool('iptables')
     end
   end

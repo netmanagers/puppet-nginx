@@ -311,6 +311,11 @@ class nginx (
     default                   => "${nginx::config_dir}/conf.d",
   }
 
+  $vdir_enable = $::operatingsystem ? {
+    /(?i:Ubuntu|Debian|Mint)/ => "${nginx::config_dir}/sites-enabled",
+    default                   => undef,
+  }
+
   ### Definition of some variables used in the module
   $manage_package = $nginx::bool_absent ? {
     true  => 'absent',
@@ -425,16 +430,25 @@ class nginx (
     }
   }
 
+  # Purge default vhost configuration
   if $nginx::config_file_default_purge {
     $default_site = $::operatingsystem ? {
-      /(?i:Debian|Ubuntu|Mint)/              => [ "${nginx::config_dir}/sites-enabled/default", "${nginx::config_dir}/sites-available/default" ],
-      /(?i:Redhat|Centos|Scientific|Fedora)/ => "${nginx::config_dir}/conf.d/default.conf",
+      /(?i:Debian|Ubuntu|Mint)/              => [ 'default' ],
+      /(?i:Redhat|Centos|Scientific|Fedora)/ => 'default.conf',
     }
 
-    file { $default_site:
+    file { "${nginx::vdir}/${default_site}":
       ensure  => absent,
       require => Package[$nginx::package],
       notify  => Service[$nginx::service],
+    }
+
+    if $nginx::vdir_enable {
+      file { "${nginx::vdir_enable}/${default_site}":
+        ensure  => absent,
+        require => Package[$nginx::package],
+        notify  => Service[$nginx::service],
+      }
     }
   }
 

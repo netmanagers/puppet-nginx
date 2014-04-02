@@ -1,4 +1,4 @@
-# File Managed by Puppet 
+# File Managed by Puppet
 user <%= scope.lookupvar('nginx::process_user') %>;
 worker_processes <%= @processorcount %>;
 
@@ -28,9 +28,8 @@ http {
   gzip         <%= scope.lookupvar('nginx::real_gzip')%>;
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-<% if scope.lookupvar('nginx::cdir') != '' &&
-      scope.lookupvar('nginx::cdir') != scope.lookupvar('nginx::vdir') %>
   include <%= scope.lookupvar('nginx::cdir')%>/*.conf;
+<% if scope.lookupvar('nginx::vdir_enable') %>
+  include <%= scope.lookupvar('nginx::vdir_enable')%>/*;
 <% end %>
-  include <%= scope.lookupvar('nginx::vdir')%>/*.conf;
 }
