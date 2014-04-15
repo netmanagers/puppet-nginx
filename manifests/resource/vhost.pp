@@ -121,7 +121,8 @@ define nginx::resource::vhost(
     default: { }
   }
 
-
+  include concat::setup
+  
   concat { $file_real: }
 
   # Add IPv6 Logic Check - Nginx service will not start if ipv6 is enabled
