@@ -15,6 +15,9 @@
 #   [*proxy_read_timeout*] - Override the default the proxy read timeout value of 90 seconds
 #   [*ssl*]                - Indicates whether to setup SSL bindings for this location.
 #   [*mixin_ssl*]          - Indicates whether SSL directive is to be put into the same file (only for backward compatibility)
+#   [*limit_except*]       - Specifies that auth requests should be enclosed within a limit_except
+#   [*auth_basic_user_file*] - auth_basic_user_file location
+#   [*auth_basic*]         - auth_basic message
 #   [*option*]             - Reserved for future use
 #
 # Actions:
@@ -31,6 +34,9 @@
 define nginx::resource::location(
   $ensure             = present,
   $vhost              = undef,
+  $limit_except       = undef,
+  $auth_basic_user_file = undef,
+  $auth_basic          = undef,
   $www_root           = undef,
   $create_www_root    = false,
   $owner              = '',
@@ -107,6 +113,12 @@ define nginx::resource::location(
   }
   if (($proxy != undef) and ($redirect != undef)) {
     fail('Cannot define both proxy and redirect in a virtual host')
+  }
+  if (($auth_basic_user_file != undef) and ($auth_basic == undef)) {
+    fail('Cannot define auth_basic_user_file without auth_basic')
+  }
+  if (($auth_basic_user_file != undef) and ($auth_basic == undef)) {
+    fail('Cannot define auth basic without a user file')
   }
 
   if $bool_create_www_root == true {
