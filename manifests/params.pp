@@ -18,7 +18,8 @@ class nginx::params {
   $worker_connections = 1024
   $keepalive_timeout = 65
   $client_max_body_size = '10m'
-  $server_names_hash_bucket_size =64
+  $server_names_hash_max_size = 512
+  $server_names_hash_bucket_size = 64
   $types_hash_max_size = 1024
   $sendfile = 'on'
 
