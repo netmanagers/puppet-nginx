@@ -26,6 +26,7 @@
 # Actions:
 #
 # Requires:
+#   puppetlabs-concat
 #
 # Sample Usage:
 #  nginx::resource::vhost { 'test2.local':
