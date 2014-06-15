@@ -7,7 +7,7 @@ pid        <%= scope.lookupvar('nginx::pid_file')%>;
 
 events {
   worker_connections <%= scope.lookupvar('nginx::worker_connections')%>;
-  # <% if scope.lookupvar('nginx::nx_multi_accept') == 'on' %>multi_accept on;<% end %>
+  # <% if scope.lookupvar('nginx::multi_accept') == 'on' %>multi_accept on;<% end %>
 }
 
 http {
