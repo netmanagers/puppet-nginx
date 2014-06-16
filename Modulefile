@@ -1,5 +1,5 @@
 name 'example42-nginx'
-version '2.2.0'
+version '2.3.0'
 
 author 'Alessandro Franceschi - Maintainer Javier Bertoli'
 license 'Apache2'
