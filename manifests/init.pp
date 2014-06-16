@@ -171,6 +171,9 @@
 # [*service_status*]
 #   If the nginx service init script supports status argument
 #
+# [*service_restart*]
+#   If the nginx service init script supports restart argument. Default is true
+#
 # [*process*]
 #   The name of nginx process
 #
@@ -274,6 +277,7 @@ class nginx (
   $package             = params_lookup( 'package' ),
   $service             = params_lookup( 'service' ),
   $service_status      = params_lookup( 'service_status' ),
+  $service_restart     = params_lookup( 'service_restart' ),
   $process             = params_lookup( 'process' ),
   $process_args        = params_lookup( 'process_args' ),
   $process_user        = params_lookup( 'process_user' ),
@@ -406,6 +410,7 @@ class nginx (
     name       => $nginx::service,
     enable     => $nginx::manage_service_enable,
     hasstatus  => $nginx::service_status,
+    hasrestart => $nginx::service_restart,
     pattern    => $nginx::process,
     require    => Package['nginx'],
   }
