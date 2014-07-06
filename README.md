@@ -55,7 +55,7 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           absent => true
         }
 
-* Enable auditing without without making changes on existing nginx configuration files
+* Enable auditing without making changes on existing nginx configuration files
 
         class { "nginx":
           audit_only => true
